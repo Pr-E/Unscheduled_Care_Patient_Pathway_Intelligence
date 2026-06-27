@@ -46,14 +46,18 @@ jobs:
           script: |
             set -e
 
+            echo "Stopping old container..."
             docker stop unscheduled-care-app || true
             docker rm unscheduled-care-app || true
 
+            echo "Logging into ECR using IAM role..."
             aws ecr get-login-password --region ${{ secrets.AWS_REGION }} \
             | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}
 
+            echo "Pulling latest image..."  
             docker pull ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:latest
 
+            echo "Running new container..."
             docker run -d \
               --name unscheduled-care-app \
               --restart unless-stopped \
@@ -66,3 +70,5 @@ jobs:
               -e MLFLOW_TRACKING_USERNAME=${{ secrets.MLFLOW_TOKEN }} \
               -e MLFLOW_TRACKING_PASSWORD=${{ secrets.MLFLOW_TOKEN }} \
               ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:latest
+
+            echo "Deployment complete."  
