@@ -216,3 +216,32 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+.env
+logs/
+reports/
+
+
+
+
+.env
+logs/
+patient-key.pem
+
+*.html
+
+
+patient_env/
+journey_env/
+local_storage/
+
+cluster_data/journey_df_engineered.csv
+cluster_data/patient_journey_segments.csv
+
+artifacts/models/
+artifacts/feature_store/
+*.pkl
+*.joblib
+*.exe
+__pycache__/
+*.pyc

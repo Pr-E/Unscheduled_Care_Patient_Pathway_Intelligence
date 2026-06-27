@@ -1,0 +1,17 @@
+executive_feature,importance
+Patient Segment,0.5953064
+Clinical Acuity,0.1034572
+Previous Disposition,0.072435975
+Insurance,0.057166226
+Employment,0.050625704
+Arrival Mode,0.032763284
+Race,0.0137882335
+Age,0.013517244
+Arrival Month,0.012446228
+Flow Pressure,0.010500254
+Arrival Time,0.009907106
+Arrival Day,0.008404958
+Ethnicity,0.0058278465
+Vitals Documentation,0.005541378
+Gender,0.005223294
+Language,0.0030886591

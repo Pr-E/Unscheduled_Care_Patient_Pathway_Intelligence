@@ -1,0 +1,8 @@
+patient_env/
+journey_env/
+__pycache__/
+*.pyc
+.git/
+local_storage/
+.DS_Store
+
