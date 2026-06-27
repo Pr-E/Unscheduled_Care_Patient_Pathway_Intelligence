@@ -5,72 +5,83 @@ on:
     branches:
       - main
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
+
+    env:
+      AWS_REGION: us-east-1
+      ECR_REGISTRY: 453355738692.dkr.ecr.us-east-1.amazonaws.com
+      ECR_REPOSITORY: unscheduled-care-app
+      EC2_INSTANCE_ID: i-03805a1e5c0f2efa2
+      S3_BUCKET_NAME: unscheduled-care-patient-pathway-intelligence
+      API_BASE_URL: http://54.158.220.0:8000
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Configure AWS credentials
+      - name: Configure AWS credentials using OIDC
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          role-to-assume: arn:aws:iam::453355738692:role/unscheduled-care-github-oidc-role
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Login to Amazon ECR
         run: |
-          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} \
-          | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}
+          aws ecr get-login-password --region $AWS_REGION \
+          | docker login --username AWS --password-stdin $ECR_REGISTRY
 
       - name: Build Docker image
-        run: docker build -t ${{ secrets.ECR_REPOSITORY }} .
+        run: |
+          docker build -t $ECR_REPOSITORY .
 
       - name: Tag Docker image
         run: |
-          docker tag ${{ secrets.ECR_REPOSITORY }}:latest \
-          ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:latest
+          docker tag $ECR_REPOSITORY:latest \
+          $ECR_REGISTRY/$ECR_REPOSITORY:latest
 
       - name: Push Docker image to ECR
         run: |
-          docker push ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:latest
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
 
-      - name: Deploy to EC2
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            set -e
+      - name: Deploy to EC2 using SSM
+        run: |
+          COMMAND_ID=$(aws ssm send-command \
+            --region "$AWS_REGION" \
+            --instance-ids "$EC2_INSTANCE_ID" \
+            --document-name "AWS-RunShellScript" \
+            --comment "Deploy NHS Unscheduled Care Intelligence Platform" \
+            --parameters 'commands=[
+              "set -e",
+              "echo Stopping old container...",
+              "docker stop unscheduled-care-app || true",
+              "docker rm unscheduled-care-app || true",
+              "echo Cleaning Docker cache...",
+              "docker system prune -af || true",
+              "echo Logging into ECR...",
+              "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 453355738692.dkr.ecr.us-east-1.amazonaws.com",
+              "echo Pulling latest image...",
+              "docker pull 453355738692.dkr.ecr.us-east-1.amazonaws.com/unscheduled-care-app:latest",
+              "echo Running new container...",
+              "docker run -d --name unscheduled-care-app --restart unless-stopped -p 8000:8000 -p 8501:8501 -e USE_S3=true -e AWS_REGION=us-east-1 -e S3_BUCKET_NAME=unscheduled-care-patient-pathway-intelligence -e MODEL_LOADING_MODE=local -e API_BASE_URL=http://54.158.220.0:8000 -e MLFLOW_TOKEN=${{ secrets.MLFLOW_TOKEN }} -e MLFLOW_TRACKING_USERNAME=${{ secrets.MLFLOW_TOKEN }} -e MLFLOW_TRACKING_PASSWORD=${{ secrets.MLFLOW_TOKEN }} 453355738692.dkr.ecr.us-east-1.amazonaws.com/unscheduled-care-app:latest",
+              "echo Deployment complete."
+            ]' \
+            --query "Command.CommandId" \
+            --output text)
 
-            echo "Stopping old container..."
-            docker stop unscheduled-care-app || true
-            docker rm unscheduled-care-app || true
+          echo "Command ID: $COMMAND_ID"
 
-            echo "Logging into ECR using IAM role..."
-            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} \
-            | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}
+          aws ssm wait command-executed \
+            --region "$AWS_REGION" \
+            --command-id "$COMMAND_ID" \
+            --instance-id "$EC2_INSTANCE_ID"
 
-            echo "Pulling latest image..."  
-            docker pull ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:latest
-
-            echo "Running new container..."
-            docker run -d \
-              --name unscheduled-care-app \
-              --restart unless-stopped \
-              -p 8000:8000 \
-              -p 8501:8501 \
-              -e USE_S3=true \
-              -e AWS_REGION=${{ secrets.AWS_REGION }} \
-              -e S3_BUCKET_NAME=${{ secrets.S3_BUCKET_NAME }} \
-              -e MODEL_LOADING_MODE=local \
-              -e API_BASE_URL=http://${{ secrets.EC2_HOST }}:8000 \
-              -e MLFLOW_TOKEN=${{ secrets.MLFLOW_TOKEN }} \
-              -e MLFLOW_TRACKING_USERNAME=${{ secrets.MLFLOW_TOKEN }} \
-              -e MLFLOW_TRACKING_PASSWORD=${{ secrets.MLFLOW_TOKEN }} \
-              ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:latest
-            
-            echo "Deployment complete."  
+          aws ssm get-command-invocation \
+            --region "$AWS_REGION" \
+            --command-id "$COMMAND_ID" \
+            --instance-id "$EC2_INSTANCE_ID"
