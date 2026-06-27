@@ -62,13 +62,15 @@ jobs:
               --name unscheduled-care-app \
               --restart unless-stopped \
               -p 8000:8000 \
+              -p 8501:8501 \
               -e USE_S3=true \
               -e AWS_REGION=${{ secrets.AWS_REGION }} \
               -e S3_BUCKET_NAME=${{ secrets.S3_BUCKET_NAME }} \
               -e MODEL_LOADING_MODE=local \
+              -e API_BASE_URL=http://${{ secrets.EC2_HOST }}:8000 \
               -e MLFLOW_TOKEN=${{ secrets.MLFLOW_TOKEN }} \
               -e MLFLOW_TRACKING_USERNAME=${{ secrets.MLFLOW_TOKEN }} \
               -e MLFLOW_TRACKING_PASSWORD=${{ secrets.MLFLOW_TOKEN }} \
               ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:latest
-
+            
             echo "Deployment complete."  
