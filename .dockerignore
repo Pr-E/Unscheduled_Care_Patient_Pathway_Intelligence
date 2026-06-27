@@ -1,8 +1,11 @@
 patient_env/
 journey_env/
+local_storage/
+artifacts/
+cluster_data/journey_df_engineered.csv
+cluster_data/patient_journey_segments.csv
+.git/
 __pycache__/
 *.pyc
-.git/
-local_storage/
-.DS_Store
-
+*.pkl
+*.joblib
