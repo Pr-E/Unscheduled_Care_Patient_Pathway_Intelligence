@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM python:3.11-slim-bookworm
 
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -11,7 +11,6 @@ RUN apt-get update && \
     g++ \
     build-essential \
     libgomp1 \
-    libatlas-base-dev \
     curl && \
     rm -rf /var/lib/apt/lists/*
 
