@@ -58,33 +58,22 @@ jobs:
               "echo Stopping existing application container...",
               "docker stop unscheduled-care-app || true",
               "docker rm -f unscheduled-care-app || true",
-
-              "echo Removing any containers bound to application ports...",
+              "echo Removing containers bound to ports...",
               "docker ps -aq --filter publish=8000 | xargs -r docker rm -f || true",
               "docker ps -aq --filter publish=8501 | xargs -r docker rm -f || true",
-
-              "echo Releasing host ports if occupied...",
+              "echo Releasing host ports...",
               "sudo lsof -ti:8000 | xargs -r sudo kill -9 || true",
               "sudo lsof -ti:8501 | xargs -r sudo kill -9 || true",
               "sleep 3",
-
-              "echo Docker disk status before cleanup...",
-              "df -h",
-              "docker system df || true",
-
-              "echo Cleaning unused Docker resources...",
+              "echo Cleaning Docker resources...",
               "docker system prune -af --volumes || true",
-
-              "echo Logging into Amazon ECR...",
+              "echo Logging into ECR...",
               "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 453355738692.dkr.ecr.us-east-1.amazonaws.com",
-
-              "echo Pulling latest application image...",
+              "echo Pulling latest image...",
               "docker pull 453355738692.dkr.ecr.us-east-1.amazonaws.com/unscheduled-care-app:latest",
-
               "echo Starting application container...",
-              "docker run -d --name unscheduled-care-app --restart unless-stopped -p 8000:8000 -p 8501:8501 -e USE_S3=true -e AWS_REGION=us-east-1 -e S3_BUCKET_NAME=unscheduled-care-patient-pathway-intelligence -e MODEL_LOADING_MODE=local -e API_BASE_URL=http://54.158.220.0:8000 -e MLFLOW_TOKEN=${{ secrets.MLFLOW_TOKEN }} -e MLFLOW_TRACKING_USERNAME=${{ secrets.MLFLOW_TOKEN }} -e MLFLOW_TRACKING_PASSWORD=${{ secrets.MLFLOW_TOKEN }} 453355738692.dkr.ecr.us-east-1.amazonaws.com/unscheduled-care-app:latest",
-
-              "echo Deployment complete. Current containers:",
+              "docker run -d --name unscheduled-care-app --restart unless-stopped -p 8000:8000 -p 8501:8501 -e USE_S3=true -e AWS_REGION=us-east-1 -e S3_BUCKET_NAME=unscheduled-care-patient-pathway-intelligence -e MODEL_LOADING_MODE=s3 -e API_BASE_URL=http://54.158.220.0:8000 -e MLFLOW_TOKEN=${{ secrets.MLFLOW_TOKEN }} -e MLFLOW_TRACKING_USERNAME=${{ secrets.MLFLOW_TRACKING_USERNAME }} -e MLFLOW_TRACKING_PASSWORD=${{ secrets.MLFLOW_TRACKING_PASSWORD }} 453355738692.dkr.ecr.us-east-1.amazonaws.com/unscheduled-care-app:latest",
+              "echo Deployment complete.",
               "docker ps -a"
             ]' \
             --query "Command.CommandId" \

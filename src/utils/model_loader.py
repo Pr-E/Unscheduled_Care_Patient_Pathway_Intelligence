@@ -1,107 +1,99 @@
-import logging
+from pathlib import Path
+
+import boto3
 import joblib
-import mlflow
-import mlflow.sklearn
-
-from mlflow.tracking import MlflowClient
-
-from src.utils.mlflow_config import setup_mlflow
 
 from src.utils.config import (
+    AWS_REGION,
+    S3_BUCKET_NAME,
+    USE_S3,
     MODEL_LOADING_MODE,
-    ADMISSION_MODEL_NAME,
-    POLICY_MODEL_NAME,
-    OPERATIONAL_MODEL_NAME,
     XGB_MODEL_PATH,
-    RF_MODEL_PATH,
     LGBM_MODEL_PATH,
+    RF_MODEL_PATH,
 )
 
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s"
-)
+MODEL_S3_KEYS = {
+    "admission": "model-registry/XGBoost/XGBoost.pkl",
+    "operational": "model-registry/LightGBM/LightGBM.pkl",
+    "policy": "model-registry/RandomForest/RandomForest.pkl",
+}
 
 
-def load_local_model(model_path):
-    if not model_path.exists():
+def _should_use_s3(local_path: Path) -> bool:
+    if MODEL_LOADING_MODE == "s3":
+        return True
+
+    if MODEL_LOADING_MODE == "local":
+        return False
+
+    return USE_S3 and not Path(local_path).exists()
+
+
+def _download_model_from_s3(
+    model_type: str,
+    local_path: Path
+) -> Path:
+    local_path = Path(local_path)
+
+    if local_path.exists():
+        return local_path
+
+    local_path.parent.mkdir(parents=True, exist_ok=True)
+
+    s3_key = MODEL_S3_KEYS[model_type]
+
+    s3 = boto3.client(
+        "s3",
+        region_name=AWS_REGION
+    )
+
+    s3.download_file(
+        S3_BUCKET_NAME,
+        s3_key,
+        str(local_path)
+    )
+
+    return local_path
+
+
+def _load_model(
+    model_type: str,
+    local_path: Path
+):
+    local_path = Path(local_path)
+
+    if _should_use_s3(local_path):
+        local_path = _download_model_from_s3(
+            model_type=model_type,
+            local_path=local_path
+        )
+
+    if not local_path.exists():
         raise FileNotFoundError(
-            f"Local model not found at: {model_path}"
+            f"Model not found locally and could not be loaded from S3: {local_path}"
         )
 
-    model = joblib.load(model_path)
-
-    logging.info(
-        f"Loaded local model from {model_path}"
-    )
-
-    return model
-
-
-def load_registered_model(model_name):
-    setup_mlflow()
-
-    client = MlflowClient()
-
-    versions = client.search_model_versions(
-        f"name='{model_name}'"
-    )
-
-    if not versions:
-        raise ValueError(
-            f"No registered model found in MLflow: {model_name}"
-        )
-
-    latest_version = max(
-        versions,
-        key=lambda version: int(version.version)
-    )
-
-    model_uri = (
-        f"models:/{model_name}/{latest_version.version}"
-    )
-
-    model = mlflow.sklearn.load_model(model_uri)
-
-    logging.info(
-        f"Loaded MLflow model {model_name} v{latest_version.version}"
-    )
-
-    return model
+    return joblib.load(local_path)
 
 
 def load_admission_model():
-    if MODEL_LOADING_MODE == "local":
-        return load_local_model(XGB_MODEL_PATH)
-
-    return load_registered_model(ADMISSION_MODEL_NAME)
-
-
-def load_policy_model():
-    if MODEL_LOADING_MODE == "local":
-        return load_local_model(RF_MODEL_PATH)
-
-    return load_registered_model(POLICY_MODEL_NAME)
+    return _load_model(
+        model_type="admission",
+        local_path=XGB_MODEL_PATH
+    )
 
 
 def load_operational_model():
-    if MODEL_LOADING_MODE == "local":
-        return load_local_model(LGBM_MODEL_PATH)
-
-    return load_registered_model(OPERATIONAL_MODEL_NAME)
-
-
-def load_all_models():
-    return {
-        "admission": load_admission_model(),
-        "policy": load_policy_model(),
-        "operational": load_operational_model(),
-    }
+    return _load_model(
+        model_type="operational",
+        local_path=LGBM_MODEL_PATH
+    )
 
 
-if __name__ == "__main__":
-    models = load_all_models()
-
-    print("\nLoaded Models")
-    print(list(models.keys()))
+def load_policy_model():
+    return _load_model(
+        model_type="policy",
+        local_path=RF_MODEL_PATH
+    )
