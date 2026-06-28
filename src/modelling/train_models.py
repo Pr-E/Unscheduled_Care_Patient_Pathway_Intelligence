@@ -68,17 +68,18 @@ FEATURE_GROUPS = {
 
 
 MODEL_PURPOSES = {
-    "XGBoost": "Admission Intelligence",
+    "RandomForest": "Admission Intelligence",
     "LightGBM": "Operational Intelligence",
-    "RandomForest": "Policy Intelligence",
+    "XGBoost": "Policy Intelligence",
 }
 
 
 LOCAL_MODEL_PATHS = {
-    "XGBoost": XGB_MODEL_PATH,
-    "LightGBM": LGBM_MODEL_PATH,
     "RandomForest": RF_MODEL_PATH,
+    "LightGBM": LGBM_MODEL_PATH,
+    "XGBoost": XGB_MODEL_PATH,
 }
+
 
 
 def executive_feature_mapper(feature):

@@ -3,9 +3,10 @@ import pandas as pd
 from src.utils.model_loader import load_policy_model
 
 
-def predict_policy(patient_data: dict):
-
+def predict_policy(patient_data: dict) -> dict:
     model = load_policy_model()
+
+    patient_data = patient_data.copy()
 
     if "cluster_name" not in patient_data:
         patient_data["cluster_name"] = "Unknown"
@@ -13,7 +14,7 @@ def predict_policy(patient_data: dict):
     patient_df = pd.DataFrame([patient_data])
 
     probability = model.predict_proba(patient_df)[0][1]
-        
+
     if probability >= 0.85:
         priority = "Critical"
     elif probability >= 0.70:
@@ -21,12 +22,11 @@ def predict_policy(patient_data: dict):
     elif probability >= 0.55:
         priority = "Moderate"
     else:
-        priority = "Low"     
+        priority = "Low"
 
     return {
         "probability": float(probability),
-        "priority": priority
+        "priority": priority,
+        "model_family": "XGBoost",
+        "intelligence_layer": "Policy Intelligence"
     }
-
-
-

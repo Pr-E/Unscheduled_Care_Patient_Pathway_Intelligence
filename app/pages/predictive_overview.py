@@ -34,13 +34,13 @@ with k1:
     kpi_card("Patients Analysed", "558,018", "Unscheduled care records")
 
 with k2:
-    kpi_card("Admission Model", "AUC 0.862", "XGBoost")
+    kpi_card("Admission Model", "AUC 0.862", "Random Forest")
 
 with k3:
     kpi_card("Operational Model", "AUC 0.858", "LightGBM")
 
 with k4:
-    kpi_card("Policy Model", "AUC 0.855", "Random Forest")
+    kpi_card("Policy Model", "AUC 0.855", "XGBoost")
 
 section_label("Executive Intelligence Narrative")
 
@@ -131,10 +131,12 @@ tabs = st.tabs([
     "Policy Model"
 ])
 
+
+
 with tabs[0]:
 
     fig = px.bar(
-        xgb_df.sort_values("Importance"),
+        rf_df.sort_values("Importance"),
         x="Importance",
         y="Feature",
         orientation="h",
@@ -142,23 +144,25 @@ with tabs[0]:
         color="Importance",
         color_continuous_scale=["#4ade80", "#fb923c"],
         template="plotly_dark",
-        title="XGBoost Admission Feature Importance"
+        title="Random Forest Admission Feature Importance"
     )
 
     st.plotly_chart(beautiful_bar(fig), use_container_width=True)
 
     narrative_card(
         """
-        <b>Why XGBoost for Admission Intelligence?</b><br><br>
-        XGBoost was selected because it captured the strongest
-        patient-level risk patterns, especially the relationship between
-        patient segment, clinical acuity and previous pathway history.
+        <b>Why Random Forest for Admission Intelligence?</b><br><br>
+        Random Forest was selected for Admission Intelligence because it provides
+        stable patient-level risk stratification while preserving interpretability
+        across clinical, demographic and pathway features.
         <br><br>
-        The feature importance shows that patient segment is the dominant
-        predictor, meaning admission risk is strongly shaped by the type
-        of patient journey pattern identified during clustering.
+        The feature importance shows that admission risk is strongly shaped by
+        clinical acuity, patient segment, age, employment status, flow pressure
+        and previous disposition. This supports safer escalation decisions,
+        senior review prioritisation and bed planning.
         """
     )
+
 
 with tabs[1]:
 
@@ -179,19 +183,21 @@ with tabs[1]:
     narrative_card(
         """
         <b>Why LightGBM for Operational Intelligence?</b><br><br>
-        LightGBM is well suited for operational forecasting because it
-        handles high-volume structured features efficiently and identifies
-        pressure signals across clinical acuity, flow pressure and arrival patterns.
+        LightGBM was selected for Operational Intelligence because it efficiently
+        captures high-volume structured pressure signals across unscheduled care.
         <br><br>
-        The feature ranking shows that operational risk is driven by
-        acuity, age, flow pressure and service utilisation indicators.
+        The feature ranking shows that operational risk is driven by clinical
+        acuity, age, flow pressure, insurance status, employment status, arrival
+        route and timing. This supports capacity planning, flow coordination and
+        escalation readiness.
         """
     )
+
 
 with tabs[2]:
 
     fig = px.bar(
-        rf_df.sort_values("Importance"),
+        xgb_df.sort_values("Importance"),
         x="Importance",
         y="Feature",
         orientation="h",
@@ -199,20 +205,21 @@ with tabs[2]:
         color="Importance",
         color_continuous_scale=["#4ade80", "#fb923c"],
         template="plotly_dark",
-        title="Random Forest Policy Feature Importance"
+        title="XGBoost Policy Feature Importance"
     )
 
     st.plotly_chart(beautiful_bar(fig), use_container_width=True)
 
     narrative_card(
         """
-        <b>Why Random Forest for Policy Intelligence?</b><br><br>
-        Random Forest provides stable, interpretable population-level
-        patterns, making it suitable for policy and service redesign
-        intelligence.
+        <b>Why XGBoost for Policy Intelligence?</b><br><br>
+        XGBoost was selected for Policy Intelligence because it captures strong
+        pathway-level patterns that are useful for strategic redesign and
+        population-level planning.
         <br><br>
-        The importance profile shows that policy opportunity is influenced
-        by clinical acuity, patient segment, age, flow pressure and previous
-        disposition. This supports transparent service planning decisions.
+        The feature importance shows that policy opportunity is strongly shaped
+        by patient segment, clinical acuity, employment status, insurance status,
+        previous disposition and arrival mode. This supports transparent service
+        redesign, admission avoidance planning and equity-aware improvement.
         """
     )

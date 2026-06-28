@@ -42,18 +42,18 @@ REQUIRED_CLUSTER_ARTIFACTS = {
     "patient_journey_segments": PATIENT_JOURNEY_SEGMENTS_PATH,
 }
 
-XGB_MODEL_PATH = MODEL_DIR / "xgboost.pkl"
-LGBM_MODEL_PATH = MODEL_DIR / "lightgbm.pkl"
-RF_MODEL_PATH = MODEL_DIR / "random_forest.pkl"
+XGB_MODEL_PATH = MODEL_DIR / "xgboost_policy.pkl"
+RF_MODEL_PATH = MODEL_DIR / "random_forest_admission.pkl"
+LGBM_MODEL_PATH = MODEL_DIR / "lightgbm_operational.pkl"
 
-ADMISSION_MODEL_NAME = "UnscheduledCare_XGBoost"
-OPERATIONAL_MODEL_NAME = "UnscheduledCare_LightGBM"
-POLICY_MODEL_NAME = "UnscheduledCare_RandomForest"
+ADMISSION_MODEL_NAME = "UnscheduledCare_RandomForest_Admission"
+OPERATIONAL_MODEL_NAME = "UnscheduledCare_LightGBM_Operational"
+POLICY_MODEL_NAME = "UnscheduledCare_XGBoost_Policy"
 
 MODEL_REGISTRY = {
-    "XGBoost": ADMISSION_MODEL_NAME,
+    "RandomForest": ADMISSION_MODEL_NAME,
     "LightGBM": OPERATIONAL_MODEL_NAME,
-    "RandomForest": POLICY_MODEL_NAME,
+    "XGBoost": POLICY_MODEL_NAME,
 }
 
 AWS_REGION = os.getenv("AWS_REGION", "us-east-1")
