@@ -14,6 +14,8 @@ jobs:
       ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
       ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
       EC2_INSTANCE_ID: i-0feb0c2590ab2ce71
+      EC2_HOST: ${{ secrets.EC2_HOST }}
+      S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
 
     steps:
       - name: Checkout repository
@@ -32,7 +34,8 @@ jobs:
           | docker login --username AWS --password-stdin "$ECR_REGISTRY"
 
       - name: Build Docker image
-        run: docker build -t "$ECR_REPOSITORY" .
+        run: |
+          docker build -t "$ECR_REPOSITORY" .
 
       - name: Tag Docker image
         run: |
@@ -40,7 +43,8 @@ jobs:
           "$ECR_REGISTRY/$ECR_REPOSITORY:latest"
 
       - name: Push Docker image to ECR
-        run: docker push "$ECR_REGISTRY/$ECR_REPOSITORY:latest"
+        run: |
+          docker push "$ECR_REGISTRY/$ECR_REPOSITORY:latest"
 
       - name: Deploy to EC2 using SSM
         run: |
@@ -64,11 +68,11 @@ jobs:
               "echo Cleaning Docker resources...",
               "docker system prune -af --volumes || true",
               "echo Logging into ECR...",
-              "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 453355738692.dkr.ecr.us-east-1.amazonaws.com",
+              "aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}",
               "echo Pulling latest image...",
-              "docker pull 453355738692.dkr.ecr.us-east-1.amazonaws.com/unscheduled-care-app:latest",
+              "docker pull ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:latest",
               "echo Starting application container...",
-              "docker run -d --name unscheduled-care-app --restart unless-stopped -p 8000:8000 -p 8501:8501 -e USE_S3=true -e AWS_REGION=us-east-1 -e S3_BUCKET_NAME=unscheduled-care-patient-pathway-intelligence -e MODEL_LOADING_MODE=s3 -e API_BASE_URL=http://54.158.220.0:8000 -e DAGSHUB_REPO_OWNER=${{ secrets.DAGSHUB_REPO_OWNER }} -e DAGSHUB_REPO_NAME=${{ secrets.DAGSHUB_REPO_NAME }} -e MLFLOW_TRACKING_USERNAME=${{ secrets.MLFLOW_TRACKING_USERNAME }} -e MLFLOW_TRACKING_PASSWORD=${{ secrets.MLFLOW_TRACKING_PASSWORD }} -e MLFLOW_TOKEN=${{ secrets.MLFLOW_TOKEN }} 453355738692.dkr.ecr.us-east-1.amazonaws.com/unscheduled-care-app:latest",
+              "docker run -d --name unscheduled-care-app --restart unless-stopped -p 8000:8000 -p 8501:8501 -e USE_S3=true -e AWS_REGION=${{ secrets.AWS_REGION }} -e S3_BUCKET_NAME=${{ secrets.S3_BUCKET_NAME }} -e MODEL_LOADING_MODE=s3 -e API_BASE_URL=http://${{ secrets.EC2_HOST }}:8000 -e DAGSHUB_REPO_OWNER=${{ secrets.DAGSHUB_REPO_OWNER }} -e DAGSHUB_REPO_NAME=${{ secrets.DAGSHUB_REPO_NAME }} -e MLFLOW_TRACKING_URI=${{ secrets.MLFLOW_TRACKING_URI }} -e MLFLOW_TRACKING_USERNAME=${{ secrets.MLFLOW_TRACKING_USERNAME }} -e MLFLOW_TRACKING_PASSWORD=${{ secrets.MLFLOW_TRACKING_PASSWORD }} -e MLFLOW_TOKEN=${{ secrets.MLFLOW_TOKEN }} -e GIT_PYTHON_REFRESH=quiet ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:latest",
               "echo Deployment complete.",
               "docker ps -a"
             ]' \
