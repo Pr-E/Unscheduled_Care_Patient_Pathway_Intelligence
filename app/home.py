@@ -218,42 +218,136 @@ narrative_card(
 )
 
 
+
 section_label("Intelligence Modules")
+
+st.markdown(
+    """
+    <style>
+    .module-card {
+        min-height: 310px;
+        background: rgba(15, 23, 42, 0.88);
+        border: 1px solid rgba(56, 189, 248, 0.18);
+        border-left: 5px solid #fb923c;
+        border-radius: 24px;
+        padding: 1.4rem 1.55rem;
+        box-shadow: 0 0 32px rgba(0,0,0,0.18);
+        transition: all 0.25s ease-in-out;
+        margin-bottom: 0.85rem;
+    }
+
+    .module-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(74, 222, 128, 0.45);
+        box-shadow: 0 0 36px rgba(74, 222, 128, 0.12);
+    }
+
+    .module-icon {
+        font-size: 2rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .module-title {
+        color: #f8fafc;
+        font-size: 1.25rem;
+        font-weight: 900;
+        margin-bottom: 0.85rem;
+    }
+
+    .module-text {
+        color: #cbd5e1;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+    }
+
+    .module-output {
+        color: #94a3b8;
+        font-size: 0.85rem;
+        line-height: 1.5;
+    }
+
+    .module-output b {
+        color: #4ade80;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 m1, m2, m3 = st.columns(3)
 
 with m1:
-    narrative_card(
+    st.markdown(
         """
-        <b>Cluster Intelligence</b><br><br>
-        Understand patient segments, population burden, demographic variation and service redesign opportunities.
-        <br><br>
-        <b>Output:</b> segment profiles, pathway opportunities and policy insight.
-        """
+        <div class="module-card">
+            <div class="module-icon">🧭</div>
+            <div class="module-title">Cluster Intelligence</div>
+            <div class="module-text">
+                Explore AI-derived patient journey groups, population burden,
+                demographic variation and service redesign opportunities.
+            </div>
+            <div class="module-output">
+                <b>Output:</b> segment profiles, pathway opportunities,
+                cohort-level admission burden and policy insight.
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True
     )
-    st.page_link("pages/cluster_overview.py", label="Launch Cluster Intelligence")
+    st.page_link(
+        "pages/cluster_overview.py",
+        label="Open Cluster Intelligence →",
+        use_container_width=True
+    )
 
 with m2:
-    narrative_card(
+    st.markdown(
         """
-        <b>Predictive Intelligence</b><br><br>
-        Predict admission risk, operational pressure and strategic policy priority using production ML models.
-        <br><br>
-        <b>Output:</b> risk scores, SHAP drivers and recommended actions.
-        """
+        <div class="module-card">
+            <div class="module-icon">🤖</div>
+            <div class="module-title">Predictive Intelligence</div>
+            <div class="module-text">
+                Predict admission risk, operational pressure and strategic
+                policy priority using production-ready machine learning models.
+            </div>
+            <div class="module-output">
+                <b>Output:</b> risk scores, SHAP drivers, pathway classification,
+                executive narratives and recommended actions.
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True
     )
-    st.page_link("pages/predictive_overview.py", label="Launch Predictive Intelligence")
+    st.page_link(
+        "pages/predictive_overview.py",
+        label="Open Predictive Intelligence →",
+        use_container_width=True
+    )
 
 with m3:
-    narrative_card(
+    st.markdown(
         """
-        <b>Governance Intelligence</b><br><br>
-        Show the full cloud production architecture: S3, EC2, ECR, Docker, GitHub Actions, SSM and MLflow.
-        <br><br>
-        <b>Output:</b> deployment controls, model lifecycle and production traceability.
-        """
+        <div class="module-card">
+            <div class="module-icon">☁️</div>
+            <div class="module-title">Governance Intelligence</div>
+            <div class="module-text">
+                View the full production architecture covering AWS, Docker,
+                GitHub Actions, MLflow, S3 artifacts and secure deployment.
+            </div>
+            <div class="module-output">
+                <b>Output:</b> cloud runtime, model lifecycle controls,
+                deployment traceability and governance readiness.
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True
     )
-    st.page_link("pages/governance_intelligence.py", label="Launch Governance Intelligence")
+    st.page_link(
+        "pages/governance_intelligence.py",
+        label="Open Governance Intelligence →",
+        use_container_width=True
+    )
 
 
 section_label("Patient Journey Segment Distribution")
