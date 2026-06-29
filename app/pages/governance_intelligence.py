@@ -13,7 +13,6 @@ from utils.ui_components import page_header, section_label, kpi_card, narrative_
 
 st.set_page_config(
     page_title="Governance Intelligence",
-    page_icon="☁️",
     layout="wide"
 )
 
@@ -185,7 +184,7 @@ narrative_card(
 )
 
 if ASSET_PATH.exists():
-    st.image(str(ASSET_PATH), use_container_width=True)
+    st.image(str(ASSET_PATH), use_column_width=True)
 else:
     st.info("Optional architecture image not found at app/assets/patient_flow.png.")
 
