@@ -6,6 +6,7 @@ import subprocess
 ROOT_DIR = Path(__file__).resolve().parents[2]
 sys.path.append(str(ROOT_DIR))
 
+import boto3
 import streamlit as st
 
 from utils.styling import load_css
@@ -21,8 +22,60 @@ st.set_page_config(
 load_css()
 
 
+AWS_REGION = os.getenv("AWS_REGION", "us-east-1")
+S3_BUCKET_NAME = os.getenv(
+    "S3_BUCKET_NAME",
+    "unscheduled-care-patient-pathway-intelligence"
+)
+
+CLUSTER_ARTIFACT_PREFIX = "cluster-artifacts/"
+LOCAL_CLUSTER_DIR = ROOT_DIR / "cluster_data"
+
+REQUIRED_CLUSTER_FILES = [
+    "cluster_centroids.csv",
+    "cluster_distribution.csv",
+    "cluster_features.csv",
+    "cluster_metadata.csv",
+    "executive_cluster_personas.csv",
+    "feature_dictionary.csv",
+    "journey_df_engineered.csv",
+    "patient_journey_segments.csv",
+]
+
+
 def is_cloud_runtime() -> bool:
     return os.getenv("USE_S3", "false").lower() == "true"
+
+
+def sync_cluster_artifacts_from_s3() -> None:
+    LOCAL_CLUSTER_DIR.mkdir(parents=True, exist_ok=True)
+
+    s3 = boto3.client(
+        "s3",
+        region_name=AWS_REGION
+    )
+
+    for file_name in REQUIRED_CLUSTER_FILES:
+        s3_key = f"{CLUSTER_ARTIFACT_PREFIX}{file_name}"
+        local_path = LOCAL_CLUSTER_DIR / file_name
+
+        s3.download_file(
+            S3_BUCKET_NAME,
+            s3_key,
+            str(local_path)
+        )
+
+
+def validate_local_cluster_artifacts() -> list:
+    missing_files = []
+
+    for file_name in REQUIRED_CLUSTER_FILES:
+        local_path = LOCAL_CLUSTER_DIR / file_name
+
+        if not local_path.exists():
+            missing_files.append(str(local_path))
+
+    return missing_files
 
 
 page_header(
@@ -30,6 +83,7 @@ page_header(
     "Retraining Center",
     "Controlled lifecycle management for model refresh, validation, registry update and production readiness."
 )
+
 
 section_label("Current Model Registry Summary")
 
@@ -63,6 +117,7 @@ with c4:
         "Registry and artifact governance"
     )
 
+
 section_label("Retraining Workflow")
 
 narrative_card(
@@ -70,24 +125,25 @@ narrative_card(
     The retraining pipeline runs the full production MLOps workflow using:
     <b>python -m src.pipeline.training</b>.
     <br><br>
-    It validates the latest patient pathway dataset, rebuilds preprocessing,
-    trains Random Forest, LightGBM and XGBoost, evaluates predictive performance,
-    generates executive and technical feature-importance outputs, registers models
-    in MLflow and uploads model artifacts, summaries and governance reports to Amazon S3.
+    Before training starts, this page synchronises the required cluster artifacts
+    from Amazon S3 into the container's local <b>cluster_data</b> directory.
+    The pipeline then rebuilds preprocessing, trains Random Forest, LightGBM and XGBoost,
+    evaluates performance, registers models in MLflow and uploads refreshed artifacts to S3.
     """
 )
+
 
 section_label("Training Pipeline Controls")
 
 controls = [
+    ("S3 Artifact Sync", "Downloads required cluster artifacts from Amazon S3 before training."),
     ("Data Validation", "Checks required modelling features and target columns."),
     ("Preprocessing", "Applies imputation, scaling and one-hot encoding."),
     ("Model Training", "Trains Random Forest, LightGBM and XGBoost."),
     ("Evaluation", "Logs accuracy, precision, recall, F1, ROC AUC and PR AUC."),
     ("Feature Importance", "Generates technical and executive feature-importance artifacts."),
     ("Model Registry", "Registers refreshed models using configured MLflow registry names."),
-    ("S3 Artifact Backup", "Uploads models, reports, summaries and feature outputs to Amazon S3."),
-    ("Governance Output", "Supports traceability, transparency and reproducibility."),
+    ("S3 Backup", "Uploads refreshed models, reports and summaries to Amazon S3."),
 ]
 
 cols = st.columns(4)
@@ -110,6 +166,7 @@ for idx, item in enumerate(controls):
             unsafe_allow_html=True
         )
 
+
 section_label("Production Safety Notice")
 
 if is_cloud_runtime():
@@ -120,8 +177,8 @@ if is_cloud_runtime():
         Retraining should only be triggered when the dataset, modelling features
         or model governance requirements have changed.
         <br><br>
-        After retraining, validate MLflow runs, S3 artifacts and prediction behaviour
-        before treating refreshed models as production-ready.
+        The system will first download required cluster artifacts from S3,
+        then execute the governed training pipeline.
         """
     )
 else:
@@ -132,6 +189,7 @@ else:
         promoting refreshed artifacts to production.
         """
     )
+
 
 section_label("Production Retraining Trigger")
 
@@ -154,9 +212,25 @@ if st.button(
     use_container_width=True,
     disabled=not confirm
 ):
-    with st.spinner("Retraining all models. This may take several minutes..."):
+    with st.spinner("Preparing artifacts and retraining all models. This may take several minutes..."):
 
         try:
+            if is_cloud_runtime():
+                st.info("Synchronising cluster artifacts from Amazon S3...")
+                sync_cluster_artifacts_from_s3()
+
+            missing_files = validate_local_cluster_artifacts()
+
+            if missing_files:
+                st.error("Retraining stopped because required local artifacts are still missing.")
+
+                with st.expander("Missing Files"):
+                    st.code("\n".join(missing_files))
+
+                st.stop()
+
+            st.success("Cluster artifacts validated. Starting training pipeline...")
+
             result = subprocess.run(
                 [
                     sys.executable,
@@ -215,9 +289,11 @@ if st.button(
         except Exception as error:
             st.error(f"Retraining failed: {error}")
 
+
 section_label("Post-Retraining Validation Checklist")
 
 checks = [
+    "Confirm required cluster artifacts were downloaded from Amazon S3.",
     "Confirm the latest MLflow runs were created successfully.",
     "Check Random Forest, LightGBM and XGBoost metrics before promotion.",
     "Verify model files were uploaded to the S3 model-registry folders.",
@@ -229,6 +305,7 @@ checks = [
 
 for check in checks:
     st.markdown(f"✅ {check}")
+
 
 section_label("Governance Notes")
 
