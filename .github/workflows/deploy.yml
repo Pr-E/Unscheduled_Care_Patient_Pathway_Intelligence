@@ -72,7 +72,22 @@ jobs:
               "echo Pulling latest image...",
               "docker pull 453355738692.dkr.ecr.us-east-1.amazonaws.com/unscheduled-care-app:latest",
               "echo Starting application container...",
-              "docker run -d --name unscheduled-care-app --restart unless-stopped -p 8000:8000 -p 8501:8501 -e USE_S3=true -e AWS_REGION=us-east-1 -e S3_BUCKET_NAME=unscheduled-care-patient-pathway-intelligence -e MODEL_LOADING_MODE=s3 -e API_BASE_URL=http://54.158.220.0:8000 -e MLFLOW_TOKEN=${{ secrets.MLFLOW_TOKEN }} -e MLFLOW_TRACKING_USERNAME=${{ secrets.MLFLOW_TRACKING_USERNAME }} -e MLFLOW_TRACKING_PASSWORD=${{ secrets.MLFLOW_TRACKING_PASSWORD }} 453355738692.dkr.ecr.us-east-1.amazonaws.com/unscheduled-care-app:latest",
+              docker run -d \
+              --name unscheduled-care-app \
+              --restart unless-stopped \
+              -p 8000:8000 \
+              -p 8501:8501 \
+              -e USE_S3=true \
+              -e AWS_REGION=us-east-1 \
+              -e S3_BUCKET_NAME=unscheduled-care-patient-pathway-intelligence \
+              -e MODEL_LOADING_MODE=s3 \
+              -e API_BASE_URL=http://54.158.220.0:8000 \
+              -e DAGSHUB_REPO_OWNER=${{ secrets.DAGSHUB_REPO_OWNER }} \
+              -e DAGSHUB_REPO_NAME=${{ secrets.DAGSHUB_REPO_NAME }} \
+              -e MLFLOW_TRACKING_USERNAME=${{ secrets.MLFLOW_TRACKING_USERNAME }} \
+              -e MLFLOW_TRACKING_PASSWORD=${{ secrets.MLFLOW_TRACKING_PASSWORD }} \
+              -e MLFLOW_TOKEN=${{ secrets.MLFLOW_TOKEN }} \
+              453355738692.dkr.ecr.us-east-1.amazonaws.com/unscheduled-care-app:latest
               "echo Deployment complete.",
               "docker ps -a"
             ]' \

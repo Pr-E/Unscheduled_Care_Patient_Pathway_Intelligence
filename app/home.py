@@ -223,66 +223,67 @@ section_label("Intelligence Modules")
 st.markdown(
     """
     <style>
-    .module-card{
-        min-height:300px;
-        background:rgba(15,23,42,.90);
-        border:1px solid rgba(56,189,248,.18);
-        border-left:5px solid #fb923c;
-        border-radius:22px;
-        padding:1.45rem;
-        transition:.25s;
-        margin-bottom:.85rem;
-        box-shadow:0 0 28px rgba(0,0,0,.18);
+    .module-card {
+        min-height: 300px;
+        background: rgba(15, 23, 42, 0.92);
+        border: 1px solid rgba(56, 189, 248, 0.18);
+        border-left: 4px solid #fb923c;
+        border-radius: 22px;
+        padding: 1.5rem;
+        box-shadow: 0 0 26px rgba(0,0,0,0.16);
+        transition: all 0.25s ease-in-out;
+        margin-bottom: 0.9rem;
     }
 
-    .module-card:hover{
-        transform:translateY(-4px);
-        border-color:rgba(74,222,128,.45);
-        box-shadow:0 0 35px rgba(74,222,128,.12);
+    .module-card:hover {
+        transform: translateY(-3px);
+        border-color: rgba(74, 222, 128, 0.35);
+        box-shadow: 0 0 28px rgba(74, 222, 128, 0.10);
     }
 
-    .module-title{
-        color:#f8fafc;
-        font-size:1.35rem;
-        font-weight:800;
-        margin-bottom:1rem;
+    .module-title {
+        color: #f8fafc;
+        font-size: 1.25rem;
+        font-weight: 900;
+        margin-bottom: 1rem;
     }
 
-    .module-text{
-        color:#cbd5e1;
-        line-height:1.65;
-        font-size:.94rem;
-        margin-bottom:1rem;
+    .module-text {
+        color: #cbd5e1;
+        font-size: 0.95rem;
+        line-height: 1.65;
+        margin-bottom: 1rem;
     }
 
-    .module-output{
-        color:#94a3b8;
-        font-size:.84rem;
-        line-height:1.55;
+    .module-output {
+        color: #94a3b8;
+        font-size: 0.86rem;
+        line-height: 1.55;
     }
 
-    .module-output b{
-        color:#4ade80;
+    .module-output b {
+        color: #4ade80;
     }
 
-    div[data-testid="stPageLink"] a{
-        width:100%;
-        display:flex;
-        justify-content:center;
-        align-items:center;
-        background:linear-gradient(90deg,#22c55e,#fb923c);
-        color:white !important;
-        padding:.78rem;
-        border-radius:12px;
-        font-weight:700;
-        text-decoration:none !important;
-        transition:.25s;
-        margin-top:.35rem;
+    div[data-testid="stPageLink"] a {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: rgba(15, 23, 42, 0.92);
+        border: 1px solid rgba(251, 146, 60, 0.45);
+        color: #f8fafc !important;
+        padding: 0.8rem;
+        border-radius: 14px;
+        font-weight: 800;
+        text-decoration: none !important;
+        transition: all 0.25s ease-in-out;
     }
 
-    div[data-testid="stPageLink"] a:hover{
-        transform:translateY(-2px);
-        box-shadow:0 0 18px rgba(251,146,60,.35);
+    div[data-testid="stPageLink"] a:hover {
+        background: rgba(251, 146, 60, 0.16);
+        border-color: rgba(74, 222, 128, 0.55);
+        transform: translateY(-2px);
     }
     </style>
     """,
@@ -292,105 +293,72 @@ st.markdown(
 m1, m2, m3 = st.columns(3)
 
 with m1:
-
     st.markdown(
         """
         <div class="module-card">
-
-            <div class="module-title">
-                Cluster Intelligence
-            </div>
-
+            <div class="module-title">Cluster Intelligence</div>
             <div class="module-text">
-                Explore AI-derived patient journey groups,
-                population burden, demographic variation and
-                service redesign opportunities across
+                Explore AI-derived patient journey groups, population burden,
+                demographic variation and service redesign opportunities across
                 unscheduled care pathways.
             </div>
-
             <div class="module-output">
-                <b>Output</b><br>
-                Segment profiles, pathway opportunities,
-                patient cohort analysis and policy insight.
+                <b>Output:</b> segment profiles, pathway opportunities,
+                cohort-level admission burden and policy insight.
             </div>
-
         </div>
         """,
         unsafe_allow_html=True
     )
-
     st.page_link(
         "pages/cluster_overview.py",
-        label="Launch Cluster Intelligence →",
+        label="Launch Cluster Intelligence",
         use_container_width=True
     )
-
 
 with m2:
-
     st.markdown(
         """
         <div class="module-card">
-
-            <div class="module-title">
-                Predictive Intelligence
-            </div>
-
+            <div class="module-title">Predictive Intelligence</div>
             <div class="module-text">
-                Generate admission risk, operational pressure
-                and strategic policy predictions using
-                production-ready machine learning models.
+                Generate admission risk, operational pressure and strategic
+                policy predictions using production-ready machine learning models.
             </div>
-
             <div class="module-output">
-                <b>Output</b><br>
-                Risk scores, SHAP explanations,
-                executive narratives and
-                recommended interventions.
+                <b>Output:</b> risk scores, SHAP explanations,
+                executive narratives and recommended interventions.
             </div>
-
         </div>
         """,
         unsafe_allow_html=True
     )
-
     st.page_link(
         "pages/predictive_overview.py",
-        label="Launch Predictive Intelligence →",
+        label="Launch Predictive Intelligence",
         use_container_width=True
     )
 
-
 with m3:
-
     st.markdown(
         """
         <div class="module-card">
-
-            <div class="module-title">
-                Governance Intelligence
-            </div>
-
+            <div class="module-title">Governance Intelligence</div>
             <div class="module-text">
-                Monitor cloud infrastructure, model lifecycle,
-                deployment governance and enterprise AI
-                production controls across the platform.
+                Monitor cloud infrastructure, model lifecycle, deployment governance
+                and enterprise AI production controls across the platform.
             </div>
-
             <div class="module-output">
-                <b>Output</b><br>
-                Cloud runtime, deployment architecture,
+                <b>Output:</b> cloud runtime, deployment architecture,
                 model governance and production traceability.
             </div>
-
         </div>
         """,
         unsafe_allow_html=True
     )
-
     st.page_link(
         "pages/governance_intelligence.py",
-        label="Launch Governance Intelligence →",
+        label="Launch Governance Intelligence",
         use_container_width=True
     )
 

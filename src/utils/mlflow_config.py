@@ -1,31 +1,35 @@
 import os
-
-import dagshub
 import mlflow
-from dotenv import load_dotenv
-
-load_dotenv(override=True)
 
 
 def setup_mlflow():
-    dagshub_token = os.getenv("MLFLOW_TOKEN")
+    repo_owner = os.getenv("DAGSHUB_REPO_OWNER")
+    repo_name = os.getenv("DAGSHUB_REPO_NAME")
 
-    if not dagshub_token:
-        raise ValueError(
-            "MLFLOW_TOKEN not found. Please add it to your .env file or GitHub Secrets."
-        )
+    tracking_uri = os.getenv("MLFLOW_TRACKING_URI")
 
-    repo_owner = os.getenv("DAGSHUB_REPO_OWNER", "ejirogoro27")
-    repo_name = os.getenv("DAGSHUB_REPO_NAME", "Unscheduled_Care_Patient_Pathway_Intelligence")
-    experiment_name = os.getenv("EXPERIMENT_NAME", "unscheduled_care_patient_pathway_intelligence")
+    username = os.getenv("MLFLOW_TRACKING_USERNAME")
+    password = (
+        os.getenv("MLFLOW_TRACKING_PASSWORD")
+        or os.getenv("MLFLOW_TOKEN")
+        or os.getenv("DAGSHUB_TOKEN")
+    )
 
-    os.environ["MLFLOW_TRACKING_USERNAME"] = dagshub_token
-    os.environ["MLFLOW_TRACKING_PASSWORD"] = dagshub_token
+    if tracking_uri is None:
+        if not repo_owner or not repo_name:
+            raise ValueError(
+                "Missing MLflow configuration. Set either MLFLOW_TRACKING_URI "
+                "or DAGSHUB_REPO_OWNER and DAGSHUB_REPO_NAME."
+            )
 
-    dagshub.init(repo_owner=repo_owner, repo_name=repo_name, mlflow=True)
+        tracking_uri = f"https://dagshub.com/{repo_owner}/{repo_name}.mlflow"
 
-    tracking_uri = f"https://dagshub.com/{repo_owner}/{repo_name}.mlflow"
+    if username:
+        os.environ["MLFLOW_TRACKING_USERNAME"] = username
+
+    if password:
+        os.environ["MLFLOW_TRACKING_PASSWORD"] = password
+
     mlflow.set_tracking_uri(tracking_uri)
-    mlflow.set_experiment(experiment_name)
 
     return tracking_uri

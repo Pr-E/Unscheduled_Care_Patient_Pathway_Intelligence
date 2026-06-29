@@ -355,6 +355,57 @@ def build_action_lists(
     }
 
 
+def recommend_care_pathway(
+    probability: float,
+    risk_level: str,
+    cluster_name: str,
+    clinical_acuity: int,
+    flow_pressure_z: float,
+    arrivalmode: str
+) -> dict:
+
+    probability_pct = probability * 100
+    cluster_text = cluster_name.lower()
+    arrival_text = arrivalmode.lower()
+
+    if (
+        probability_pct >= 80
+        or risk_level == "Very High"
+        or clinical_acuity >= 4
+        or "elderly" in cluster_text
+    ):
+        pathway = "Admission"
+        rationale = (
+            "High predicted admission risk or high clinical complexity. "
+            "Prioritise senior review, inpatient planning and early discharge coordination."
+        )
+
+    elif (
+        probability_pct >= 55
+        or risk_level in ["High", "Moderate"]
+        or flow_pressure_z >= 1.0
+        or "moderate" in cluster_text
+        or "ambulance" in cluster_text
+        or arrival_text in ["ambulance", "transfer"]
+    ):
+        pathway = "Observation / SDEC"
+        rationale = (
+            "Intermediate risk profile. Suitable for short-stay observation, Same Day Emergency Care, "
+            "rapid diagnostics or senior decision-making before committing to admission."
+        )
+
+    else:
+        pathway = "Ambulatory / Community"
+        rationale = (
+            "Lower predicted admission risk. Consider ambulatory care, urgent treatment pathway, "
+            "community follow-up or safe discharge with safety-netting."
+        )
+
+    return {
+        "pathway": pathway,
+        "rationale": rationale
+    }
+
 def render_action_panel(
     title: str,
     actions: list,
@@ -636,16 +687,24 @@ if st.button(
     )
 
 
+    care_pathway = recommend_care_pathway(
+        probability=result["probability"],
+        risk_level=risk_level,
+        cluster_name=cluster_name,
+        clinical_acuity=clinical_acuity,
+        flow_pressure_z=flow_pressure_z,
+        arrivalmode=arrivalmode
+    )
+
     # =================================================
     # KPI SUMMARY
     # =================================================
 
     section_label("Executive Intelligence Summary")
 
-    k1, k2, k3, k4 = st.columns(4)
+    k1, k2, k3, k4, k5 = st.columns(5)
 
     with k1:
-
         kpi_card(
             "Admission Probability",
             f"{probability:.1f}%",
@@ -653,7 +712,6 @@ if st.button(
         )
 
     with k2:
-
         kpi_card(
             "Risk Level",
             risk_level,
@@ -661,15 +719,20 @@ if st.button(
         )
 
     with k3:
+        kpi_card(
+            "Recommended Pathway",
+            care_pathway["pathway"],
+            "Suggested care route"
+        )
 
+    with k4:
         kpi_card(
             "Patient Segment",
             cluster_name,
             "Predicted pathway group"
         )
 
-    with k4:
-
+    with k5:
         kpi_card(
             "Segment Confidence",
             f"{cluster_confidence:.1f}%",
@@ -677,6 +740,15 @@ if st.button(
         )
 
 
+    section_label("Recommended Care Pathway")
+
+    narrative_card(
+        f"""
+        <b>Recommended pathway:</b> {care_pathway["pathway"]}
+        <br><br>
+        {care_pathway["rationale"]}
+        """
+    )
 
     # =================================================
     # PREDICTION EVIDENCE
@@ -887,6 +959,12 @@ Admission Probability:
 
 Risk Level:
 {risk_level}
+
+Recommended Care Pathway:
+{care_pathway["pathway"]}
+
+Pathway Rationale:
+{care_pathway["rationale"]}
 
 Key Explainability Drivers:
 {chr(10).join(top_drivers)}
