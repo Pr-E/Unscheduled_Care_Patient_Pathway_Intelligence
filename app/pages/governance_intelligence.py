@@ -133,18 +133,61 @@ for idx, (_, row) in enumerate(persona_df.iterrows()):
 section_label("Technology Stack")
 
 tech_items = [
-    ("Development", "VS Code", "Production Python development environment"),
-    ("Version Control", "GitHub", "Source control and deployment trigger"),
-    ("CI/CD", "GitHub Actions", "Automated Docker build, push and deployment"),
-    ("Containerisation", "Docker", "Portable runtime for API and dashboard"),
-    ("Container Registry", "Amazon ECR", "Secure application image registry"),
-    ("Cloud Runtime", "Amazon EC2", "Production hosting for FastAPI and Streamlit"),
-    ("Artifact Storage", "Amazon S3", "Models, metadata, cluster outputs and reports"),
-    ("API Serving", "FastAPI", "Prediction, health and retraining endpoints"),
-    ("Dashboard", "Streamlit", "Executive intelligence interface"),
-    ("Experiment Tracking", "MLflow + DagsHub", "Model registry, metrics and traceability"),
-    ("Explainability", "SHAP", "Transparent feature driver intelligence"),
-    ("Deployment Control", "AWS SSM", "Secure remote deployment execution"),
+
+    ("Primary IDE", "Visual Studio Code",
+     "Unified development environment for Python, R, FastAPI, Streamlit, Docker and cloud deployment."),
+
+    ("Statistical Computing",
+     "R",
+     "Patient pathway segmentation, K-Means clustering, cluster profiling, executive personas and exported analytical artifacts."),
+
+    ("Machine Learning",
+     "Python",
+     "Feature engineering, predictive modelling, explainability and production inference."),
+
+    ("Version Control",
+     "GitHub",
+     "Source code management and collaborative development."),
+
+    ("CI/CD",
+     "GitHub Actions",
+     "Automated Docker build, testing, image publishing and deployment."),
+
+    ("Containerisation",
+     "Docker",
+     "Portable runtime for production deployment."),
+
+    ("Container Registry",
+     "Amazon ECR",
+     "Versioned Docker image repository."),
+
+    ("Cloud Runtime",
+     "Amazon EC2",
+     "Production hosting for FastAPI and Streamlit services."),
+
+    ("Artifact Storage",
+     "Amazon S3",
+     "Cluster outputs, trained models, metadata, reports and governance artifacts."),
+
+    ("Experiment Tracking",
+     "MLflow + DagsHub",
+     "Model registry, experiment tracking and lifecycle governance."),
+
+    ("API Serving",
+     "FastAPI",
+     "Production REST prediction services."),
+
+    ("Executive Dashboard",
+     "Streamlit",
+     "Interactive healthcare intelligence platform."),
+
+    ("Explainability",
+     "SHAP",
+     "Model transparency and feature attribution."),
+
+    ("Deployment Control",
+     "AWS Systems Manager",
+     "Secure server deployment and lifecycle automation.")
 ]
 
 cols = st.columns(4)
