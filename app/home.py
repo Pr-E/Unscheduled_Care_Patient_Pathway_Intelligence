@@ -23,6 +23,7 @@ st.set_page_config(
 
 load_css()
 
+LOGO_PATH = ROOT_DIR / "app" / "assets" / "care_logo.png"
 
 API_BASE_URL = os.getenv(
     "API_BASE_URL",
@@ -108,15 +109,39 @@ st.markdown(
 
 
 with st.sidebar:
-    st.markdown(
-        """
-        <div class="cf-logo">
-            <div class="cf-brand">CareFlow <span>IQ</span></div>
-            <div class="cf-subtitle">Intelligent Care. Better Outcomes.</div>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+
+    if LOGO_PATH.exists():
+        st.markdown(
+            """
+            <div style="
+                border:1px solid rgba(56,189,248,.25);
+                border-radius:22px;
+                padding:0.75rem;
+                background:linear-gradient(135deg, rgba(15,23,42,.95), rgba(8,47,73,.65));
+                box-shadow:0 0 28px rgba(56,189,248,.12);
+                margin-bottom:1rem;
+            ">
+            """,
+            unsafe_allow_html=True
+        )
+
+        st.image(
+            str(LOGO_PATH),
+            use_column_width=True
+        )
+
+        st.markdown("</div>", unsafe_allow_html=True)
+
+    else:
+        st.markdown(
+            """
+            <div class="cf-logo">
+                <div class="cf-brand">CareFlow <span>IQ</span></div>
+                <div class="cf-subtitle">Intelligent Care. Better Outcomes.</div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
     st.markdown("### NHS UNSCHEDULED CARE")
     st.caption("Clinical, operational and strategic intelligence")
