@@ -1,3 +1,23 @@
+![Python](https://img.shields.io/badge/Python-3.11-blue)
+
+![R](https://img.shields.io/badge/R-4.x-276DC3)
+
+![FastAPI](https://img.shields.io/badge/FastAPI-Production-009688)
+
+![Streamlit](https://img.shields.io/badge/Streamlit-Dashboard-FF4B4B)
+
+![Docker](https://img.shields.io/badge/Docker-Container-blue)
+
+![AWS](https://img.shields.io/badge/AWS-Cloud-orange)
+
+![MLflow](https://img.shields.io/badge/MLflow-MLOps-blue)
+
+![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-CI/CD-success)
+
+![License](https://img.shields.io/badge/License-MIT-green)
+
+![Healthcare AI](https://img.shields.io/badge/Healthcare-AI-success)
+
 # CareFlow IQ
 
 # Explainable AI for Data-Driven Intelligence in Unscheduled Care
@@ -117,6 +137,60 @@ Major preprocessing activities included
 The R pipeline exported reusable analytical artefacts consumed later by the Python production platform.
 
 ---
+
+## Patient Journey Segmentation Pipeline (R)
+
+```text
+Raw Yale ED Dataset
+
+        │
+
+        ▼
+
+Cleaning
+
+        │
+
+        ▼
+
+Feature Engineering
+
+        │
+
+        ▼
+
+Standardisation
+
+        │
+
+        ▼
+
+K-Means Clustering
+
+        │
+
+        ▼
+
+Cluster Validation
+
+        │
+
+        ▼
+
+Executive Personas
+
+        │
+
+        ▼
+
+CSV Artefacts
+
+        │
+
+        ▼
+
+Python Intelligence Platform
+```
 
 # Feature Engineering
 
@@ -466,6 +540,61 @@ Executive intelligence dashboard
 
 ---
 
+# MLOps Workflow
+
+```text
+Developer Push
+
+        │
+
+        ▼
+
+GitHub
+
+        │
+
+        ▼
+
+GitHub Actions
+
+        │
+
+        ▼
+
+Docker Build
+
+        │
+
+        ▼
+
+Amazon ECR
+
+        │
+
+        ▼
+
+AWS Systems Manager
+
+        │
+
+        ▼
+
+Amazon EC2
+
+        │
+
+        ▼
+
+FastAPI + Streamlit
+
+        │
+
+        ▼
+
+Production Dashboard
+```
+
+
 # Technology Stack
 
 ## Analytics
@@ -609,22 +738,124 @@ Executive intelligence dashboard
 ```text
 CareFlow-IQ/
 │
-├── app/
-├── artifacts/
-├── cluster_data/
-├── src/
-│   ├── clustering/
-│   ├── explainability/
-│   ├── intelligence/
-│   ├── modelling/
-│   ├── pipeline/
-│   ├── predictive/
-│   └── utils/
+├── .github/
+│   └── workflows/
+│       └── deploy.yml                 # CI/CD pipeline
 │
-├── .github/workflows/
-├── Dockerfile
+├── .vscode/                           # VS Code workspace configuration
+│
+├── app/
+│   ├── assets/                        # Images and architecture diagrams
+│   ├── pages/                         # Streamlit intelligence pages
+│   │   ├── admission_intelligence.py
+│   │   ├── cluster_explorer.py
+│   │   ├── cluster_overview.py
+│   │   ├── governance_intelligence.py
+│   │   ├── model_retraining.py
+│   │   ├── operational_intelligence.py
+│   │   ├── patient_pathways.py
+│   │   ├── policy_insights.py
+│   │   ├── policy_intelligence.py
+│   │   └── predictive_overview.py
+│   │
+│   ├── ui/                            # Custom UI components
+│   ├── utils/                         # Streamlit utilities
+│   └── home.py                        # Executive dashboard
+│
+├── artifacts/
+│   ├── models/
+│   ├── feature_importance/
+│   ├── reports/
+│   └── metadata/
+│
+├── cluster_data/                      # R-generated clustering artefacts
+│
+├── src/
+│   ├── api/                           # FastAPI prediction services
+│   ├── artifacts/                     # Artifact management
+│   ├── cloud/                         # AWS S3 integration
+│   ├── clustering/                    # Cluster loading and processing
+│   ├── explainability/                # SHAP explanations
+│   ├── intelligence/                  # Executive intelligence engine
+│   ├── modelling/                     # Machine learning models
+│   ├── models/                        # Model registry
+│   ├── pipeline/                      # Training pipeline
+│   ├── predictive/                    # Prediction engine
+│   ├── utils/                         # Shared utilities
+│   └── visualisations/                # Plot generation
+│
+├── Dockerfile                         # Production container
 ├── requirements.txt
-└── README.md
+├── setup.py
+├── start.sh
+├── LICENSE
+├── README.md
+└── .gitignore
+```
+
+---
+
+## Overall Architecture
+
+```text
+                       YALE ED DATASET
+                    (558,018 Patient Visits)
+                               │
+                               ▼
+                 R Analytics & Feature Engineering
+                               │
+               Missing Values • Feature Engineering
+               Clinical Scoring • Metadata Creation
+                               │
+                               ▼
+                    Patient Segmentation (K-Means)
+                               │
+               Cluster Artefacts Exported as CSV
+                               │
+──────────────────────────────────────────────────────────────
+                               │
+                               ▼
+                 Python Production Intelligence Platform
+                               │
+      ┌────────────────────────────────────────────────┐
+      │                Machine Learning                │
+      │                                                │
+      │ Random Forest   LightGBM    XGBoost            │
+      └────────────────────────────────────────────────┘
+                               │
+                               ▼
+                    Explainability (SHAP)
+                               │
+                               ▼
+             Executive Intelligence Generation
+                               │
+      Admission │ Operational │ Policy Intelligence
+                               │
+                               ▼
+                  FastAPI Prediction Services
+                               │
+                               ▼
+              Streamlit Executive Dashboard (CareFlow IQ)
+                               │
+──────────────────────────────────────────────────────────────
+                               │
+                               ▼
+                  Docker Container (Production)
+                               │
+                               ▼
+                        Amazon EC2 Runtime
+                               │
+                ┌──────────────┴──────────────┐
+                ▼                             ▼
+           Amazon S3                     MLflow/DagsHub
+     Models • Metadata               Experiment Tracking
+     Reports • Artefacts              Model Registry
+                │
+                ▼
+          GitHub Actions CI/CD
+                │
+                ▼
+       Automatic Production Deployment
 ```
 
 ---
