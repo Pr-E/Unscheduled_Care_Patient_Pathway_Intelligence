@@ -139,11 +139,11 @@ tech_items = [
 
     ("Statistical Computing",
      "R",
-     "Patient pathway segmentation, K-Means clustering, cluster profiling, executive personas and exported analytical artifacts."),
+     "Feature engineering, patient pathway segmentation, K-Means clustering, cluster profiling, executive personas and exported analytical artifacts."),
 
     ("Machine Learning",
      "Python",
-     "Feature engineering, predictive modelling, explainability and production inference."),
+     "Predictive modelling, explainability and production inference."),
 
     ("Version Control",
      "GitHub",
