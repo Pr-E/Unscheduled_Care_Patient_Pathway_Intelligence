@@ -485,6 +485,68 @@ Production prediction API
 Executive intelligence dashboard
 
 ---
+# Platform Intelligence Modules
+
+```text
+                    CareFlow IQ
+
+            Executive Intelligence Platform
+                         │
+──────────────────────────────────────────────────
+
+Cluster Intelligence
+
+• Patient Segmentation
+
+• Population Analytics
+
+• Pathway Discovery
+
+──────────────────────────────────────────────────
+
+Admission Intelligence
+
+• Admission Risk
+
+• Recommended Care Pathway
+
+• SHAP Explainability
+
+──────────────────────────────────────────────────
+
+Operational Intelligence
+
+• Flow Pressure
+
+• Capacity Prediction
+
+• Resource Utilisation
+
+──────────────────────────────────────────────────
+
+Policy Intelligence
+
+• Service Redesign
+
+• Population Burden
+
+• Strategic Planning
+
+──────────────────────────────────────────────────
+
+Governance Intelligence
+
+• MLflow
+
+• Model Registry
+
+• AWS Infrastructure
+
+• CI/CD
+
+• Traceability
+```
+---
 
 # MLOps Workflow
 
