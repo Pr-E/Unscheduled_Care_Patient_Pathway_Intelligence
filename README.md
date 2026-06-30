@@ -1,307 +1,670 @@
-# Unscheduled Care Patient Pathway Intelligence Platform
+# CareFlow IQ
 
-## Overview
+# Explainable AI for Data-Driven Intelligence in Unscheduled Care
 
-The NHS Unscheduled Care Patient Pathway Intelligence Platform is an end-to-end healthcare analytics and machine learning system designed to identify, explain, and optimise emergency and unscheduled care pathways.
-
-The platform combines patient journey segmentation, clinical acuity modelling, operational flow analytics, explainable machine learning, and executive-level visualisation to support data-driven service redesign and policy decision-making.
-
-Using over 550,000 emergency department encounters, the project identifies distinct patient pathway archetypes, uncovers drivers of admission, and provides actionable insights for healthcare leaders, operational managers, and policymakers.
+> A production-ready healthcare intelligence platform that transforms emergency department patient journey data into clinical, operational and strategic decision support using Artificial Intelligence, Explainable Machine Learning and Cloud-Native MLOps.
 
 ---
 
-## Problem Statement
+## Executive Summary
 
-Emergency departments face increasing pressure from:
+CareFlow IQ is an end-to-end healthcare intelligence platform developed to improve patient journeys across unscheduled care.
 
-* Rising patient demand
-* Complex clinical presentations
-* Delayed admissions and discharge processes
-* Resource constraints
-* Variability in patient pathways
+Rather than producing traditional retrospective reports, the platform converts emergency department data into real-time intelligence capable of supporting clinicians, operational managers, service planners and healthcare executives.
 
-Traditional reporting focuses on aggregate metrics and often fails to reveal how different patient groups interact with the healthcare system.
+The project combines:
 
-This project addresses that challenge by:
+- Patient pathway segmentation
+- Clinical risk modelling
+- Operational intelligence
+- Policy intelligence
+- Explainable Artificial Intelligence (XAI)
+- Cloud-native MLOps
+- Executive analytics
 
-* Discovering hidden patient pathway segments
-* Quantifying clinical and operational risk
-* Explaining admission decisions
-* Identifying opportunities for pathway redesign
+into one integrated decision support platform.
 
----
-
-## Project Objectives
-
-### Patient Journey Segmentation
-
-Identify clinically and operationally distinct patient populations using unsupervised machine learning.
-
-### Pathway Discovery
-
-Understand how patients move through unscheduled care pathways.
-
-### Operational Intelligence
-
-Quantify emergency department flow pressure and resource demand.
-
-### Explainable AI
-
-Provide transparent explanations for admission predictions and patient pathway assignment.
-
-### Decision Support
-
-Generate evidence-based recommendations for service redesign and policy intervention.
+The solution demonstrates how machine learning can be responsibly deployed within healthcare using transparent governance, explainability and reproducible cloud deployment.
 
 ---
 
-## Dataset
+# Dataset
 
-### Scale
+## Source
 
-* 558,018 Emergency Department encounters
+Department of Emergency Medicine
 
-### Domains
+Yale School of Medicine
 
-#### Demographics
-
-* Age
-* Gender
-* Ethnicity
-* Race
-* Language
-* Employment Status
-* Insurance Status
-
-#### Operational Variables
-
-* Arrival Mode
-* Arrival Month
-* Arrival Day
-* Arrival Time
-* Previous Disposition
-
-#### Clinical Variables
-
-* Emergency Severity Index (ESI)
-* Vital Signs
-* Physiological Instability Indicators
-* Chief Complaint Severity
-
-#### Outcomes
-
-* Admission
-* Discharge
+New Haven, Connecticut, USA
 
 ---
 
-## Feature Engineering
+## Original Research
 
-### Clinical Acuity Engine
+The original retrospective study included every adult Emergency Department attendance between
 
-A composite acuity framework combining:
+**March 2014 – July 2017**
 
-* ESI severity
-* Physiological instability
-* Chief complaint severity
+across
 
-Clinical Acuity = f(ESI, Physiology, Complaint Severity)
+- One Academic Emergency Department
+- Two Community Emergency Departments
 
----
+within the Yale New Haven Health System.
 
-### Flow Pressure Engine
+The original study extracted
 
-A novel operational pressure metric combining:
+**972 clinical, operational and demographic variables**
 
-* Arrival mode pressure
-* Temporal demand pressure
-* Previous pathway risk
-
-Flow Pressure = f(Arrival Mode, Temporal Demand, Prior Disposition)
+for every patient encounter.
 
 ---
 
-### Physiological Instability Engine
+## Original Objective
 
-Derived indicators:
+The original research aimed to
 
-* Tachycardia
-* Tachypnea
-* Hypoxia
-* Hypotension
+> Predict hospital admission at the point of Emergency Department triage.
+
+This project significantly extends that work into a complete production healthcare intelligence platform.
 
 ---
 
-## Patient Journey Segmentation
+# Project Evolution
 
-### Algorithm
+The project progressed through six major phases.
+
+```
+Raw Clinical Dataset
+        │
+        ▼
+R Analytics & Feature Engineering
+        │
+        ▼
+Patient Journey Segmentation
+        │
+        ▼
+Python Intelligence Platform
+        │
+        ▼
+Explainable Machine Learning
+        │
+        ▼
+Cloud-Native MLOps Deployment
+```
+
+---
+
+# Phase 1 — Data Engineering (R)
+
+All exploratory analytics, feature engineering and clustering were developed using **R**.
+
+This stage transformed the original emergency department dataset into a structured intelligence dataset suitable for machine learning.
+
+Major preprocessing activities included
+
+- Missing value handling
+- Clinical variable cleaning
+- Temporal feature creation
+- Operational feature engineering
+- Demographic standardisation
+- Metadata generation
+- Feature dictionary creation
+- Patient pathway aggregation
+- Cluster dataset generation
+
+The R pipeline exported reusable analytical artefacts consumed later by the Python production platform.
+
+---
+
+# Feature Engineering
+
+Clinical, operational and demographic variables were transformed into intelligence-ready features.
+
+## Demographic Features
+
+- Age
+- Gender
+- Race
+- Ethnicity
+- Language
+- Employment Status
+- Insurance Status
+
+---
+
+## Clinical Features
+
+- Emergency Severity Index (ESI)
+- Physiological instability
+- Vital sign summaries
+- Chief complaint severity
+- Previous admission history
+
+---
+
+## Operational Features
+
+- Arrival mode
+- Arrival month
+- Arrival weekday
+- Hour of arrival
+- Previous disposition
+- Historical utilisation
+
+---
+
+## Engineered Intelligence Features
+
+### Clinical Acuity Score
+
+A composite severity metric combining
+
+- Emergency Severity Index
+- Physiological instability
+- Clinical presentation severity
+
+```
+Clinical Acuity
+
+=
+
+f(
+    ESI,
+    Physiology,
+    Complaint Severity
+)
+```
+
+---
+
+### Flow Pressure Score
+
+Designed to quantify operational demand using
+
+- Arrival mode
+- Temporal demand
+- Previous pathway behaviour
+
+```
+Flow Pressure
+
+=
+
+f(
+Arrival Mode,
+Arrival Time,
+Previous Disposition
+)
+```
+
+---
+
+### Physiological Instability
+
+Derived indicators include
+
+- Tachycardia
+- Tachypnoea
+- Hypotension
+- Hypoxia
+
+---
+
+# Patient Journey Segmentation
+
+Rather than analysing all emergency patients as one homogeneous population, the platform applies unsupervised learning to identify clinically meaningful pathway groups.
+
+## Algorithm
 
 K-Means Clustering
 
-### Clustering Features
+---
 
-* Clinical Acuity
-* Flow Pressure
-* Age
+## Cluster Validation
 
-### Validation
-
-* Elbow Method
-* Silhouette Analysis
-
-### Final Segments
-
-#### Acute Ambulance Pathways
-
-Working-age patients arriving predominantly via ambulance with moderate acuity and elevated operational demand.
-
-#### Community Ambulatory Care
-
-Low-acuity ambulatory patients with high discharge rates and potential community diversion opportunities.
-
-#### Complex Elderly Admissions
-
-Older patients with the highest admission rates, significant ambulance utilisation, and substantial resource requirements.
-
-#### Moderate Complexity Care
-
-Older adults with mixed pathways and opportunities for same-day emergency care optimisation.
+- Elbow Method
+- Silhouette Analysis
 
 ---
 
-## Explainable Machine Learning
+## Clustering Features
 
-### Admission Prediction
-
-Models:
-
-* XGBoost
-* LightGBM
-* Random Forest
-
-### Explainability
-
-SHAP (SHapley Additive Explanations)
-
-Used to explain:
-
-* Drivers of admission
-* Drivers of discharge
-* Cluster assignment behaviour
+- Clinical Acuity
+- Flow Pressure
+- Age
 
 ---
 
-## Visual Analytics
+## Identified Patient Segments
 
-### Executive Dashboard
+### Community Ambulatory Care
 
-Built with Streamlit.
-
-Features:
-
-* Executive KPI cards
-* Patient segment explorer
-* Cluster comparison views
-* Health inequality insights
-
-### Patient Journey Visualisation
-
-* Sankey Diagrams
-* Alluvial Flows
-* Pathway Transition Analysis
-* Segment Distribution Dashboards
+Patients with low clinical acuity and high discharge likelihood who may benefit from ambulatory pathways.
 
 ---
 
-## API Layer
+### Moderate Complexity Care
 
-Built using FastAPI.
-
-Capabilities:
-
-* Real-time admission prediction
-* Patient pathway classification
-* Segment assignment
-* Explainability endpoints
+Patients requiring additional investigation with mixed admission outcomes.
 
 ---
 
-## Technology Stack
+### Acute Ambulance Pathways
 
-### Data Science
-
-* Python
-* Pandas
-* NumPy
-* Scikit-Learn
-
-### Machine Learning
-
-* XGBoost
-* LightGBM
-* SHAP
-
-### Visualisation
-
-* Plotly
-* Streamlit
-
-### API
-
-* FastAPI
-* Uvicorn
-
-### Development
-
-* VS Code
-* Git
-* GitHub
+Higher-acuity patients arriving predominantly by ambulance with increased operational burden.
 
 ---
 
-## Repository Structure
+### Complex Elderly Admissions
+
+Older adults with the greatest admission probability and highest healthcare resource utilisation.
+
+---
+
+The clustering engine exports
+
+- Cluster centroids
+- Cluster metadata
+- Executive personas
+- Cluster distributions
+- Feature summaries
+- Patient assignments
+- Feature dictionaries
+
+These artefacts become reusable intelligence assets throughout the platform.
+
+---
+
+# Python Intelligence Platform
+
+The exported R artefacts are imported into a Python production architecture developed in Visual Studio Code.
+
+Python extends the analytical outputs into an end-to-end decision intelligence system.
+
+---
+
+# Intelligence Modules
+
+## Cluster Intelligence
+
+Provides
+
+- Segment exploration
+- Population profiling
+- Demographic variation
+- Admission burden
+- Sankey pathway analysis
+- Executive personas
+
+---
+
+## Admission Intelligence
+
+Random Forest
+
+Provides
+
+- Admission probability
+- Risk category
+- Recommended care pathway
+- SHAP explanations
+- Executive narrative
+- Clinical recommendations
+
+---
+
+## Operational Intelligence
+
+LightGBM
+
+Provides
+
+- Operational pressure prediction
+- Capacity intelligence
+- Resource demand forecasting
+- Executive operational guidance
+
+---
+
+## Policy Intelligence
+
+XGBoost
+
+Provides
+
+- Strategic redesign priority
+- Population-level opportunity identification
+- Service planning intelligence
+
+---
+
+# Explainable Artificial Intelligence
+
+Every prediction is fully explainable using SHAP.
+
+The platform identifies
+
+- strongest positive drivers
+
+- strongest negative drivers
+
+- patient-level reasoning
+
+- executive summaries
+
+- transparent feature attribution
+
+This enables clinicians and operational leaders to understand **why** predictions were generated.
+
+---
+
+# Production MLOps
+
+The project demonstrates a complete healthcare AI deployment workflow.
+
+## Experiment Tracking
+
+- MLflow
+
+- DagsHub
+
+---
+
+## Model Registry
+
+Production models
+
+- Random Forest
+
+- LightGBM
+
+- XGBoost
+
+are version controlled and registered through MLflow.
+
+---
+
+## Model Retraining
+
+A governed retraining pipeline supports
+
+- Dataset validation
+
+- Preprocessing
+
+- Feature generation
+
+- Model training
+
+- Evaluation
+
+- Model registration
+
+- Artefact publication
+
+---
+
+# Cloud Architecture
+
+The complete platform is deployed using AWS.
+
+## Amazon EC2
+
+Production hosting
+
+---
+
+## Amazon S3
+
+Model artefacts
+
+Cluster artefacts
+
+Reports
+
+Metadata
+
+---
+
+## Amazon ECR
+
+Docker image registry
+
+---
+
+## Docker
+
+Application containerisation
+
+---
+
+## GitHub Actions
+
+Continuous Integration
+
+Continuous Deployment
+
+---
+
+## AWS Systems Manager
+
+Secure deployment automation
+
+---
+
+## FastAPI
+
+Production prediction API
+
+---
+
+## Streamlit
+
+Executive intelligence dashboard
+
+---
+
+# Technology Stack
+
+## Analytics
+
+- R
+
+- Python
+
+---
+
+## Machine Learning
+
+- Scikit-Learn
+
+- Random Forest
+
+- XGBoost
+
+- LightGBM
+
+---
+
+## Explainability
+
+- SHAP
+
+---
+
+## Dashboard
+
+- Streamlit
+
+---
+
+## API
+
+- FastAPI
+
+- Uvicorn
+
+---
+
+## Visualisation
+
+- Plotly
+
+---
+
+## Cloud
+
+- Amazon EC2
+
+- Amazon S3
+
+- Amazon ECR
+
+- AWS Systems Manager
+
+---
+
+## DevOps
+
+- Docker
+
+- GitHub Actions
+
+---
+
+## Governance
+
+- MLflow
+
+- DagsHub
+
+---
+
+# Key Business Value Delivered
+
+## Clinical
+
+✔ Earlier identification of high-risk patients
+
+✔ Explainable admission prediction
+
+✔ Recommended care pathways
+
+✔ Transparent AI-assisted decision support
+
+---
+
+## Operational
+
+✔ Identification of pathway bottlenecks
+
+✔ Flow pressure forecasting
+
+✔ Improved resource planning
+
+✔ Capacity management intelligence
+
+---
+
+## Strategic
+
+✔ Patient segmentation
+
+✔ Population health insight
+
+✔ Admission avoidance opportunities
+
+✔ Service redesign intelligence
+
+---
+
+## Executive
+
+✔ Interactive executive dashboard
+
+✔ AI-generated narratives
+
+✔ Governance reporting
+
+✔ Explainable decision support
+
+---
+
+## Technical
+
+✔ Production-ready MLOps
+
+✔ Cloud deployment
+
+✔ Automated CI/CD
+
+✔ Secure model governance
+
+---
+
+# Repository Structure
 
 ```text
-project/
+CareFlow-IQ/
 │
-├── data/
-├── notebooks/
-├── models/
 ├── app/
-├── api/
-├── assets/
+├── artifacts/
+├── cluster_data/
+├── src/
+│   ├── clustering/
+│   ├── explainability/
+│   ├── intelligence/
+│   ├── modelling/
+│   ├── pipeline/
+│   ├── predictive/
+│   └── utils/
+│
+├── .github/workflows/
+├── Dockerfile
 ├── requirements.txt
 └── README.md
 ```
 
 ---
 
-## Key Outcomes
+# Future Work
 
-* Identification of distinct patient journey archetypes
-* Quantification of operational flow pressure
-* Explainable admission prediction
-* Executive-level pathway analytics
-* Data-driven service redesign recommendations
-* Decision-support framework for healthcare operations
+Planned extensions include
+
+- Real-time EHR integration
+
+- HL7 FHIR interoperability
+
+- Readmission prediction
+
+- Length-of-stay prediction
+
+- Hospital-at-Home pathway optimisation
+
+- Reinforcement Learning for patient streaming
+
+- Digital Twin simulation
+
+- Fairness monitoring
+
+- Model drift detection
 
 ---
 
-## Future Enhancements
+# Author
 
-* Real-time streaming analytics
-* Hospital-at-home pathway optimisation
-* Length-of-stay prediction
-* Readmission risk modelling
-* Capacity forecasting
-* Digital twin simulation of emergency care pathways
+**Priscilla Ejiro**
+
+Health Data Scientist | Machine Learning Engineer | Medical Biochemist
+
+Developing responsible Artificial Intelligence systems that improve healthcare delivery, patient outcomes and operational decision-making.
 
 ---
 
-## Author
+# Acknowledgements
 
-Priscilla Ejiro
+This work extends research conducted using emergency department data from the Department of Emergency Medicine, Yale School of Medicine.
 
-Data Scientist | Machine Learning Engineer | Healthcare Analytics
-
-Building explainable AI systems that transform healthcare operations and patient outcomes.
+The platform transforms that research into a production-ready healthcare AI system demonstrating modern machine learning, explainable AI and cloud-native MLOps for healthcare.
