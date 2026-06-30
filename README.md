@@ -655,7 +655,7 @@ Planned extensions include
 
 # Author
 
-**Priscilla Ejiro**
+**Priscillia Ejiro**
 
 Health Data Scientist | Machine Learning Engineer | Medical Biochemist
 
