@@ -509,79 +509,6 @@ for idx, item in enumerate(problem_items):
             unsafe_allow_html=True
         )
 
-section_label("Project Objectives")
-
-objectives = [
-
-    (
-        "Patient Segmentation",
-        "Discover clinically meaningful patient pathway groups.",
-        "Supports personalised care pathways and demand planning."
-    ),
-
-    (
-        "Admission Intelligence",
-        "Predict inpatient admission probability at ED triage.",
-        "Supports earlier escalation and bed management."
-    ),
-
-    (
-        "Operational Intelligence",
-        "Forecast patient flow pressure and operational demand.",
-        "Improves capacity planning and flow optimisation."
-    ),
-
-    (
-        "Policy Intelligence",
-        "Identify pathway redesign priorities using population-level analytics.",
-        "Supports evidence-based service transformation."
-    ),
-
-    (
-        "Explainable AI",
-        "Provide transparent explanations for every model prediction.",
-        "Improves clinician trust and AI governance."
-    ),
-
-    (
-        "Enterprise MLOps",
-        "Deliver a secure production-ready AI platform.",
-        "Supports deployment, monitoring and continuous retraining."
-    )
-
-]
-
-cols = st.columns(3)
-
-for i, (title, objective, value) in enumerate(objectives):
-
-    with cols[i % 3]:
-
-        st.markdown(
-            f"""
-            <div class="objective-card">
-
-                <div class="objective-title">
-                    {title}
-                </div>
-
-                <div class="objective-heading">
-                    Mission
-                </div>
-
-                <div class="objective-text">
-                    {objective}
-                </div>
-
-                <div class="objective-impact">
-                    <b>Business Outcome</b><br>
-                    {value}
-                </div>
-
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
 
 section_label("Executive Value Proposition")
 
@@ -707,34 +634,8 @@ with m3:
     )
 
 
-section_label("Patient Journey Segment Distribution")
 
-cluster_dist = (
-    journey_df
-    .groupby("cluster_name")
-    .size()
-    .reset_index(name="patients")
-)
-
-fig = px.pie(
-    cluster_dist,
-    names="cluster_name",
-    values="patients",
-    hole=0.62,
-    title="Patient Journey Segment Distribution",
-    template="plotly_dark"
-)
-
-fig.update_layout(
-    height=520,
-    paper_bgcolor="rgba(0,0,0,0)",
-    plot_bgcolor="rgba(0,0,0,0)",
-    font=dict(color="#f8fafc")
-)
-
-st.plotly_chart(fig, use_container_width=True)
-
-section_label("Platform Capabilities")
+section_label("Key Business Value Delivered")
 
 deliverables = [
     {
@@ -742,27 +643,26 @@ deliverables = [
         "metric": "4 Cohorts",
         "note": "Population stratification",
         "detail": """
-        <b>Capability</b><br><br>
-        Identifies clinically meaningful patient pathway cohorts across more than
-        550,000 unscheduled care journeys.
+        <b>Business Value Delivered</b><br><br>
+        Applied unsupervised machine learning to identify four clinically meaningful
+        patient pathway cohorts across more than 550,000 unscheduled care journeys.
         <br><br>
-        <b>Business Outcome</b><br>
-        Helps leaders understand demand by patient type, supporting targeted
-        pathway redesign and resource planning.
+        <b>Executive Impact</b><br>
+        Enables leaders to understand demand by patient type rather than total attendances,
+        supporting targeted service redesign and resource planning.
         """
     },
     {
         "title": "Admission Intelligence",
         "metric": "Random Forest",
-        "note": "Admission prediction",
+        "note": "Patient-level prediction",
         "detail": """
-        <b>Capability</b><br><br>
-        Predicts inpatient admission probability using demographic, clinical and
-        pathway-level features.
+        <b>Business Value Delivered</b><br><br>
+        Developed a production-ready admission prediction engine estimating admission
+        probability using demographic, clinical and pathway characteristics.
         <br><br>
-        <b>Business Outcome</b><br>
-        Supports earlier escalation, bed planning, admission avoidance and
-        proactive clinical decision-making.
+        <b>Executive Impact</b><br>
+        Supports escalation, admission avoidance, bed management and proactive clinical intervention.
         """
     },
     {
@@ -770,13 +670,12 @@ deliverables = [
         "metric": "LightGBM",
         "note": "Pressure forecasting",
         "detail": """
-        <b>Capability</b><br><br>
-        Forecasts operational pressure signals using acuity, flow and utilisation
-        indicators.
+        <b>Business Value Delivered</b><br><br>
+        Built an operational intelligence model that predicts pressure signals using flow,
+        acuity and utilisation indicators.
         <br><br>
-        <b>Business Outcome</b><br>
-        Helps teams anticipate congestion, optimise patient flow and plan capacity
-        before pressure escalates.
+        <b>Executive Impact</b><br>
+        Helps teams anticipate congestion, optimise flow and plan capacity before pressures escalate.
         """
     },
     {
@@ -784,13 +683,12 @@ deliverables = [
         "metric": "XGBoost",
         "note": "Strategic prioritisation",
         "detail": """
-        <b>Capability</b><br><br>
-        Identifies pathway populations and service areas with the strongest
-        redesign potential.
+        <b>Business Value Delivered</b><br><br>
+        Developed a strategic intelligence model identifying patient populations and pathways
+        requiring redesign and policy intervention.
         <br><br>
-        <b>Business Outcome</b><br>
-        Supports evidence-based investment, commissioning priorities and sustainable
-        service improvement.
+        <b>Executive Impact</b><br>
+        Enables evidence-based investment decisions, commissioning priorities and sustainable improvement.
         """
     },
     {
@@ -798,12 +696,11 @@ deliverables = [
         "metric": "SHAP",
         "note": "Transparent decisions",
         "detail": """
-        <b>Capability</b><br><br>
-        Explains prediction drivers using patient-level SHAP feature attribution.
+        <b>Business Value Delivered</b><br><br>
+        Integrated SHAP explainability to expose the clinical and operational factors driving predictions.
         <br><br>
-        <b>Business Outcome</b><br>
-        Improves transparency, clinician confidence, accountability and responsible
-        AI governance.
+        <b>Executive Impact</b><br>
+        Improves transparency, clinician confidence, accountability and responsible AI governance.
         """
     },
     {
@@ -811,11 +708,11 @@ deliverables = [
         "metric": "AWS",
         "note": "Enterprise deployment",
         "detail": """
-        <b>Capability</b><br><br>
-        Deploys the platform through Docker, EC2, S3, ECR, MLflow and GitHub Actions.
+        <b>Business Value Delivered</b><br><br>
+        Engineered a cloud-native platform using EC2, S3, ECR, Docker, MLflow and GitHub Actions.
         <br><br>
-        <b>Business Outcome</b><br>
-        Provides a scalable, auditable and production-ready healthcare AI architecture.
+        <b>Executive Impact</b><br>
+        Provides a scalable, resilient and production-ready healthcare AI deployment architecture.
         """
     },
 ]
