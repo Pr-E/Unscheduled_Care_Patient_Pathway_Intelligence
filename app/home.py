@@ -37,44 +37,183 @@ def check_api_health() -> bool:
         return response.status_code == 200
     except Exception:
         return False
-    
+
+
 st.markdown(
     """
     <style>
-    .objective-card {
-        min-height: 185px;
-        background: linear-gradient(145deg, rgba(15,23,42,.96), rgba(8,47,73,.42));
-        border: 1px solid rgba(56,189,248,.20);
-        border-radius: 22px;
-        padding: 1.25rem 1.35rem;
-        margin-bottom: 1rem;
-        box-shadow: 0 10px 28px rgba(0,0,0,.18);
-        transition: all .25s ease-in-out;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .objective-label {
-        color: #fb923c;
-        font-size: .72rem;
-        text-transform: uppercase;
-        letter-spacing: .18rem;
-        font-weight: 900;
+    .side-card {
+        border: 1px solid rgba(148,163,184,.18);
+        border-radius: 16px;
+        padding: .85rem;
+        background: rgba(15,23,42,.78);
         margin-bottom: .75rem;
     }
-
-    .objective-title {
-        color: #f8fafc;
-        font-size: 1.3rem;
-        font-weight: 900;
-        margin-bottom: .85rem;
+    .side-title {
+        color: #94a3b8;
+        font-size: .72rem;
+        text-transform: uppercase;
+        letter-spacing: .12rem;
+        font-weight: 800;
+        margin-bottom: .55rem;
     }
-
-    .objective-text {
+    .status-online {
+        color: #4ade80;
+        font-weight: 900;
+    }
+    .status-offline {
+        color: #fb7185;
+        font-weight: 900;
+    }
+    .model-row {
+        display:flex;
+        justify-content:space-between;
+        gap:.5rem;
+        color:#cbd5e1;
+        font-size:.78rem;
+        margin-bottom:.4rem;
+    }
+    .cloud-row {
+        color:#cbd5e1;
+        font-size:.8rem;
+        line-height:1.5;
+        margin-bottom:.45rem;
+    }
+    .exec-card {
+        min-height: 210px;
+        background: rgba(15, 23, 42, 0.92);
+        border: 1px solid rgba(56, 189, 248, 0.18);
+        border-left: 4px solid #fb923c;
+        border-radius: 22px;
+        padding: 1.25rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 0 26px rgba(0,0,0,0.16);
+    }
+    .exec-title {
+        color: #f8fafc;
+        font-size: 1.05rem;
+        font-weight: 900;
+        margin-bottom: .65rem;
+    }
+    .exec-text {
         color: #cbd5e1;
-        font-size: .9rem;
+        font-size: .88rem;
         line-height: 1.55;
     }
+    .exec-impact {
+        color: #94a3b8;
+        font-size: .82rem;
+        line-height: 1.5;
+        margin-top: .7rem;
+    }
+    .exec-impact b {
+        color: #4ade80;
+    }
+
+    .objective-card{
+
+        min-height:290px;
+
+        background:linear-gradient(
+            145deg,
+            rgba(15,23,42,.98),
+            rgba(17,24,39,.95)
+        );
+
+        border:1px solid rgba(74,222,128,.18);
+
+        border-top:4px solid #fb923c;
+
+        border-radius:22px;
+
+        padding:28px;
+
+        transition:.30s ease;
+
+        margin-bottom:20px;
+
+        box-shadow:0 12px 30px rgba(0,0,0,.22);
+
+        cursor:pointer;
+
+    }
+
+    .objective-card:hover{
+
+        transform:translateY(-8px);
+
+        border-color:#4ade80;
+
+        border-top-color:#4ade80;
+
+        box-shadow:
+            0 0 28px rgba(74,222,128,.18),
+            0 18px 38px rgba(0,0,0,.35);
+
+        background:linear-gradient(
+            145deg,
+            rgba(20,30,48,.98),
+            rgba(20,83,45,.28)
+        );
+
+    }
+
+    .objective-title{
+
+        font-size:1.25rem;
+
+        font-weight:900;
+
+        color:white;
+
+        margin-bottom:20px;
+
+    }
+
+    .objective-heading{
+
+        color:#4ade80;
+
+        font-size:.82rem;
+
+        text-transform:uppercase;
+
+        letter-spacing:.18rem;
+
+        font-weight:800;
+
+        margin-bottom:12px;
+
+    }
+
+    .objective-text{
+
+        color:#e2e8f0;
+
+        font-size:.96rem;
+
+        line-height:1.7;
+
+        margin-bottom:22px;
+
+    }
+
+    .objective-impact{
+
+        color:#94a3b8;
+
+        line-height:1.6;
+
+        font-size:.86rem;
+
+    }
+
+    .objective-impact b{
+
+        color:#fb923c;
+
+    }
+
 
     .module-card {
         min-height: 310px;
@@ -155,10 +294,12 @@ st.markdown(
             0 0 0 1px rgba(74,222,128,.18),
             0 0 24px rgba(74,222,128,.18);
     }
+
     </style>
     """,
     unsafe_allow_html=True
 )
+
 
 
 with st.sidebar:
@@ -286,16 +427,20 @@ with c4:
     kpi_card("Production Models", "3", "Admission, operational, policy")
 
 
-section_label("Platform Intelligence Overview")
+section_label("Platform Overview")
 
 narrative_card(
     """
-    <b>CareFlow IQ</b> converts unscheduled care pathway data into executive-ready intelligence.
-    It combines patient segmentation, pathway analysis, admission prediction, operational pressure
-    forecasting, policy prioritisation, SHAP explainability and cloud-based MLOps governance.
-    <br><br>
-    The platform is deployed as a Dockerised FastAPI and Streamlit application on AWS EC2,
-    with model artifacts and data products served from Amazon S3 and automated deployment through GitHub Actions.
+    <b>CareFlow IQ</b> is an enterprise healthcare intelligence platform that transforms
+    Emergency Department data into clinical, operational and strategic decision support.
+
+    The platform combines patient segmentation, predictive machine learning,
+    explainable AI, operational analytics and cloud-native MLOps to provide
+    healthcare leaders with proactive intelligence rather than retrospective reporting.
+
+    Through a production-ready architecture built on AWS, Docker, FastAPI,
+    Streamlit and GitHub Actions, CareFlow IQ delivers transparent,
+    scalable and governable AI for modern unscheduled care services.
     """
 )
 
@@ -364,48 +509,93 @@ for idx, item in enumerate(problem_items):
             unsafe_allow_html=True
         )
 
-
 section_label("Project Objectives")
 
 objectives = [
-    ("Patient Segmentation", "Identify clinically and operationally distinct patient pathway groups."),
-    ("Admission Prediction", "Predict inpatient admission risk using triage and pathway-level features."),
-    ("Operational Intelligence", "Forecast pressure signals that may affect patient flow and escalation."),
-    ("Policy Intelligence", "Identify service redesign priorities and population-level improvement opportunities."),
-    ("Explainable AI", "Use SHAP to explain patient-level and model-level prediction drivers."),
-    ("Production MLOps", "Deploy a governed, cloud-ready AI platform with CI/CD and retraining capability."),
+
+    (
+        "Patient Segmentation",
+        "Discover clinically meaningful patient pathway groups.",
+        "Supports personalised care pathways and demand planning."
+    ),
+
+    (
+        "Admission Intelligence",
+        "Predict inpatient admission probability at ED triage.",
+        "Supports earlier escalation and bed management."
+    ),
+
+    (
+        "Operational Intelligence",
+        "Forecast patient flow pressure and operational demand.",
+        "Improves capacity planning and flow optimisation."
+    ),
+
+    (
+        "Policy Intelligence",
+        "Identify pathway redesign priorities using population-level analytics.",
+        "Supports evidence-based service transformation."
+    ),
+
+    (
+        "Explainable AI",
+        "Provide transparent explanations for every model prediction.",
+        "Improves clinician trust and AI governance."
+    ),
+
+    (
+        "Enterprise MLOps",
+        "Deliver a secure production-ready AI platform.",
+        "Supports deployment, monitoring and continuous retraining."
+    )
+
 ]
 
-ocols = st.columns(3)
+cols = st.columns(3)
 
-for idx, item in enumerate(objectives):
-    title, detail = item
+for i, (title, objective, value) in enumerate(objectives):
 
-    with ocols[idx % 3]:
+    with cols[i % 3]:
+
         st.markdown(
             f"""
             <div class="objective-card">
-                <div class="objective-label">Strategic Objective</div>
-                <div class="objective-title">{title}</div>
-                <div class="objective-text">{detail}</div>
+
+                <div class="objective-title">
+                    {title}
+                </div>
+
+                <div class="objective-heading">
+                    Mission
+                </div>
+
+                <div class="objective-text">
+                    {objective}
+                </div>
+
+                <div class="objective-impact">
+                    <b>Business Outcome</b><br>
+                    {value}
+                </div>
+
             </div>
             """,
             unsafe_allow_html=True
         )
 
-
-section_label("Strategic Objectives")
+section_label("Executive Value Proposition")
 
 narrative_card(
     """
-    The strategic objective of <b>CareFlow IQ</b> is to move unscheduled care analytics
-    from retrospective reporting into proactive, explainable and operationally useful
-    decision intelligence.
-    <br><br>
-    The platform supports healthcare stakeholders by identifying hidden patient journey
-    segments, predicting admission risk, surfacing operational pressure, recommending
-    care pathways, and providing transparent evidence for service redesign, escalation
-    planning and admission avoidance.
+    CareFlow IQ enables healthcare organisations to move beyond traditional reporting
+    by transforming routine Emergency Department data into actionable intelligence.
+
+    The platform identifies hidden patient pathway variation, predicts admission risk,
+    forecasts operational pressure, explains AI-driven recommendations and supports
+    evidence-based service redesign through a fully governed production environment.
+
+    This creates a single intelligence platform supporting frontline clinicians,
+    operational managers, executives and healthcare policymakers.
     """
 )
 
@@ -428,17 +618,16 @@ with d4:
 
 narrative_card(
     """
-    The source dataset comes from a retrospective study of adult Emergency Department visits
-    across the <b>Yale New Haven Health System</b>, including one academic and two community
-    Emergency Departments.
-    <br><br>
-    The original study was affiliated with the <b>Department of Emergency Medicine,
-    Yale School of Medicine, New Haven, Connecticut, USA</b>, and was designed to predict
-    hospital admission at the time of Emergency Department triage.
-    <br><br>
-    CareFlow IQ extends that original admission-prediction objective into a broader
-    intelligence platform covering segmentation, prediction, explainability, operational
-    pressure, policy insight, governance and cloud deployment.
+    CareFlow IQ is built using a retrospective Emergency Department dataset from the
+    Yale New Haven Health System comprising over <b>558,000 adult patient encounters</b>
+    collected between <b>March 2014 and July 2017</b> across one academic and two
+    community Emergency Departments.
+
+    Originally developed to predict hospital admission at triage,
+    the dataset has been transformed into a comprehensive intelligence platform
+    supporting patient segmentation, predictive analytics,
+    explainable AI, operational intelligence,
+    strategic planning and enterprise deployment.
     """
 )
 
@@ -545,8 +734,7 @@ fig.update_layout(
 
 st.plotly_chart(fig, use_container_width=True)
 
-
-section_label("Key Business Value Delivered")
+section_label("Platform Capabilities")
 
 deliverables = [
     {
@@ -554,26 +742,27 @@ deliverables = [
         "metric": "4 Cohorts",
         "note": "Population stratification",
         "detail": """
-        <b>Business Value Delivered</b><br><br>
-        Applied unsupervised machine learning to identify four clinically meaningful
-        patient pathway cohorts across more than 550,000 unscheduled care journeys.
+        <b>Capability</b><br><br>
+        Identifies clinically meaningful patient pathway cohorts across more than
+        550,000 unscheduled care journeys.
         <br><br>
-        <b>Executive Impact</b><br>
-        Enables leaders to understand demand by patient type rather than total attendances,
-        supporting targeted service redesign and resource planning.
+        <b>Business Outcome</b><br>
+        Helps leaders understand demand by patient type, supporting targeted
+        pathway redesign and resource planning.
         """
     },
     {
         "title": "Admission Intelligence",
         "metric": "Random Forest",
-        "note": "Patient-level prediction",
+        "note": "Admission prediction",
         "detail": """
-        <b>Business Value Delivered</b><br><br>
-        Developed a production-ready admission prediction engine estimating admission
-        probability using demographic, clinical and pathway characteristics.
+        <b>Capability</b><br><br>
+        Predicts inpatient admission probability using demographic, clinical and
+        pathway-level features.
         <br><br>
-        <b>Executive Impact</b><br>
-        Supports escalation, admission avoidance, bed management and proactive clinical intervention.
+        <b>Business Outcome</b><br>
+        Supports earlier escalation, bed planning, admission avoidance and
+        proactive clinical decision-making.
         """
     },
     {
@@ -581,12 +770,13 @@ deliverables = [
         "metric": "LightGBM",
         "note": "Pressure forecasting",
         "detail": """
-        <b>Business Value Delivered</b><br><br>
-        Built an operational intelligence model that predicts pressure signals using flow,
-        acuity and utilisation indicators.
+        <b>Capability</b><br><br>
+        Forecasts operational pressure signals using acuity, flow and utilisation
+        indicators.
         <br><br>
-        <b>Executive Impact</b><br>
-        Helps teams anticipate congestion, optimise flow and plan capacity before pressures escalate.
+        <b>Business Outcome</b><br>
+        Helps teams anticipate congestion, optimise patient flow and plan capacity
+        before pressure escalates.
         """
     },
     {
@@ -594,12 +784,13 @@ deliverables = [
         "metric": "XGBoost",
         "note": "Strategic prioritisation",
         "detail": """
-        <b>Business Value Delivered</b><br><br>
-        Developed a strategic intelligence model identifying patient populations and pathways
-        requiring redesign and policy intervention.
+        <b>Capability</b><br><br>
+        Identifies pathway populations and service areas with the strongest
+        redesign potential.
         <br><br>
-        <b>Executive Impact</b><br>
-        Enables evidence-based investment decisions, commissioning priorities and sustainable improvement.
+        <b>Business Outcome</b><br>
+        Supports evidence-based investment, commissioning priorities and sustainable
+        service improvement.
         """
     },
     {
@@ -607,11 +798,12 @@ deliverables = [
         "metric": "SHAP",
         "note": "Transparent decisions",
         "detail": """
-        <b>Business Value Delivered</b><br><br>
-        Integrated SHAP explainability to expose the clinical and operational factors driving predictions.
+        <b>Capability</b><br><br>
+        Explains prediction drivers using patient-level SHAP feature attribution.
         <br><br>
-        <b>Executive Impact</b><br>
-        Improves transparency, clinician confidence, accountability and responsible AI governance.
+        <b>Business Outcome</b><br>
+        Improves transparency, clinician confidence, accountability and responsible
+        AI governance.
         """
     },
     {
@@ -619,11 +811,11 @@ deliverables = [
         "metric": "AWS",
         "note": "Enterprise deployment",
         "detail": """
-        <b>Business Value Delivered</b><br><br>
-        Engineered a cloud-native platform using EC2, S3, ECR, Docker, MLflow and GitHub Actions.
+        <b>Capability</b><br><br>
+        Deploys the platform through Docker, EC2, S3, ECR, MLflow and GitHub Actions.
         <br><br>
-        <b>Executive Impact</b><br>
-        Provides a scalable, resilient and production-ready healthcare AI deployment architecture.
+        <b>Business Outcome</b><br>
+        Provides a scalable, auditable and production-ready healthcare AI architecture.
         """
     },
 ]
