@@ -23,10 +23,11 @@ ASSET_PATH = ROOT_DIR / "app" / "assets" / "patient_flow.png"
 journey_df = load_patient_data()
 persona_df = load_persona_data()
 
+
 page_header(
     "Governance &",
     "Production Intelligence",
-    "Enterprise readiness, cloud deployment, model governance, explainability and end-to-end system intelligence."
+    "Enterprise readiness, research lineage, cloud deployment, model governance and end-to-end system intelligence."
 )
 
 
@@ -45,6 +46,76 @@ with c3:
 
 with c4:
     kpi_card("Cloud Runtime", "AWS EC2", "Dockerised production app")
+
+
+section_label("Clinical Data & Research Foundation")
+
+d1, d2, d3, d4 = st.columns(4)
+
+with d1:
+    kpi_card("Data Source", "Yale New Haven", "Health System")
+
+with d2:
+    kpi_card("ED Encounters", "558,018", "Adult emergency visits")
+
+with d3:
+    kpi_card("Study Period", "2014–2017", "March 2014 to July 2017")
+
+with d4:
+    kpi_card("Original Variables", "972", "Per patient encounter")
+
+narrative_card(
+    """
+    The analytical foundation for CareFlow IQ is a retrospective Emergency Department
+    dataset from the <b>Yale New Haven Health System</b>, covering adult ED visits
+    between <b>March 2014 and July 2017</b>.
+    <br><br>
+    The original study included encounters across <b>one academic</b> and
+    <b>two community Emergency Departments</b>, with <b>972 variables</b>
+    extracted per patient visit.
+    <br><br>
+    The source research was affiliated with the <b>Department of Emergency Medicine,
+    Yale School of Medicine, New Haven, Connecticut, United States of America</b>.
+    The original objective was to predict hospital admission at the time of ED triage.
+    CareFlow IQ extends this into a governed patient pathway intelligence and production
+    MLOps platform.
+    """
+)
+
+
+section_label("Research-to-Production Pipeline")
+
+pipeline_items = [
+    ("R Feature Engineering", "Clinical, operational and demographic variables transformed into intelligence-ready features."),
+    ("R Patient Segmentation", "K-Means clustering used to identify clinically meaningful patient pathway archetypes."),
+    ("Cluster Artifact Export", "Centroids, metadata, executive personas and patient journey segments exported as CSV artifacts."),
+    ("Python ML Pipeline", "R-generated artifacts loaded into Python for supervised modelling and production inference."),
+    ("Explainability Layer", "SHAP used to explain patient-level and model-level prediction drivers."),
+    ("Cloud Deployment", "FastAPI and Streamlit deployed through Docker, ECR, EC2, S3 and GitHub Actions."),
+]
+
+pcols = st.columns(3)
+
+for idx, item in enumerate(pipeline_items):
+    title, detail = item
+
+    with pcols[idx % 3]:
+        st.markdown(
+            f"""
+            <div class="glass-card" style="min-height:155px; margin-bottom:1rem;">
+                <div style="color:#38bdf8; font-size:0.75rem; letter-spacing:0.14rem; text-transform:uppercase; font-weight:900;">
+                    Pipeline Stage
+                </div>
+                <div style="color:white; font-size:1.15rem; font-weight:900; margin-top:0.6rem;">
+                    {title}
+                </div>
+                <div style="color:#cbd5e1; font-size:0.82rem; margin-top:0.6rem; line-height:1.5;">
+                    {detail}
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
 
 section_label("Cloud & Deployment Architecture")
@@ -92,7 +163,7 @@ with m1:
         <b>Admission Intelligence</b><br><br>
         <b>Model:</b> Random Forest<br>
         <b>Purpose:</b> Patient-level admission risk prediction.<br>
-        <b>Governance value:</b> Supports escalation, senior review and bed planning.
+        <b>Governance value:</b> Supports escalation, senior review, bed planning and recommended care pathway decisions.
         """
     )
 
@@ -102,7 +173,7 @@ with m2:
         <b>Operational Intelligence</b><br><br>
         <b>Model:</b> LightGBM<br>
         <b>Purpose:</b> Operational pressure and flow disruption forecasting.<br>
-        <b>Governance value:</b> Supports capacity planning and command-centre readiness.
+        <b>Governance value:</b> Supports capacity planning, escalation readiness and command-centre awareness.
         """
     )
 
@@ -133,61 +204,76 @@ for idx, (_, row) in enumerate(persona_df.iterrows()):
 section_label("Technology Stack")
 
 tech_items = [
-
-    ("Primary IDE", "Visual Studio Code",
-     "Unified development environment for Python, R, FastAPI, Streamlit, Docker and cloud deployment."),
-
-    ("Statistical Computing",
-     "R",
-     "Feature engineering, patient pathway segmentation, K-Means clustering, cluster profiling, executive personas and exported analytical artifacts."),
-
-    ("Machine Learning",
-     "Python",
-     "Predictive modelling, explainability and production inference."),
-
-    ("Version Control",
-     "GitHub",
-     "Source code management and collaborative development."),
-
-    ("CI/CD",
-     "GitHub Actions",
-     "Automated Docker build, testing, image publishing and deployment."),
-
-    ("Containerisation",
-     "Docker",
-     "Portable runtime for production deployment."),
-
-    ("Container Registry",
-     "Amazon ECR",
-     "Versioned Docker image repository."),
-
-    ("Cloud Runtime",
-     "Amazon EC2",
-     "Production hosting for FastAPI and Streamlit services."),
-
-    ("Artifact Storage",
-     "Amazon S3",
-     "Cluster outputs, trained models, metadata, reports and governance artifacts."),
-
-    ("Experiment Tracking",
-     "MLflow + DagsHub",
-     "Model registry, experiment tracking and lifecycle governance."),
-
-    ("API Serving",
-     "FastAPI",
-     "Production REST prediction services."),
-
-    ("Executive Dashboard",
-     "Streamlit",
-     "Interactive healthcare intelligence platform."),
-
-    ("Explainability",
-     "SHAP",
-     "Model transparency and feature attribution."),
-
-    ("Deployment Control",
-     "AWS Systems Manager",
-     "Secure server deployment and lifecycle automation.")
+    (
+        "Primary IDE",
+        "Visual Studio Code",
+        "Unified development environment for Python, R, FastAPI, Streamlit, Docker and cloud deployment."
+    ),
+    (
+        "Statistical Computing",
+        "R",
+        "Feature engineering, patient pathway segmentation, K-Means clustering, cluster profiling, executive personas and exported analytical artifacts."
+    ),
+    (
+        "Machine Learning",
+        "Python",
+        "Predictive modelling, explainability, production inference, API orchestration and artifact management."
+    ),
+    (
+        "Version Control",
+        "GitHub",
+        "Source control, release management and CI/CD deployment trigger."
+    ),
+    (
+        "CI/CD",
+        "GitHub Actions",
+        "Automated Docker build, image publishing and deployment to cloud runtime."
+    ),
+    (
+        "Containerisation",
+        "Docker",
+        "Portable application runtime for FastAPI and Streamlit production services."
+    ),
+    (
+        "Container Registry",
+        "Amazon ECR",
+        "Versioned Docker image repository for reproducible deployment."
+    ),
+    (
+        "Cloud Runtime",
+        "Amazon EC2",
+        "Production hosting for FastAPI and Streamlit services."
+    ),
+    (
+        "Artifact Storage",
+        "Amazon S3",
+        "Cluster outputs, trained models, metadata, reports and governance artifacts."
+    ),
+    (
+        "Experiment Tracking",
+        "MLflow + DagsHub",
+        "Model registry, experiment tracking, metrics and lifecycle governance."
+    ),
+    (
+        "API Serving",
+        "FastAPI",
+        "Production REST prediction services and health endpoint."
+    ),
+    (
+        "Executive Dashboard",
+        "Streamlit",
+        "Interactive healthcare intelligence interface for clinical, operational and strategic users."
+    ),
+    (
+        "Explainability",
+        "SHAP",
+        "Transparent feature attribution and patient-level prediction drivers."
+    ),
+    (
+        "Deployment Control",
+        "AWS Systems Manager",
+        "Secure server deployment and lifecycle automation without direct SSH dependency."
+    ),
 ]
 
 cols = st.columns(4)
@@ -198,7 +284,7 @@ for idx, item in enumerate(tech_items):
     with cols[idx % 4]:
         st.markdown(
             f"""
-            <div class="glass-card" style="min-height:150px; margin-bottom:1rem;">
+            <div class="glass-card" style="min-height:155px; margin-bottom:1rem;">
                 <div style="color:#fb923c; font-size:0.75rem; letter-spacing:0.16rem; text-transform:uppercase; font-weight:800;">
                     {layer}
                 </div>
@@ -230,6 +316,44 @@ if ASSET_PATH.exists():
     st.image(str(ASSET_PATH), use_column_width=True)
 else:
     st.info("Optional architecture image not found at app/assets/patient_flow.png.")
+
+
+section_label("Platform Capability Summary")
+
+capabilities = [
+    ("Feature Engineering", "Implemented"),
+    ("R Clustering Pipeline", "Implemented"),
+    ("AI Patient Segmentation", "Implemented"),
+    ("Predictive Models", "Implemented"),
+    ("Explainable AI", "Implemented"),
+    ("MLflow Registry", "Implemented"),
+    ("Docker Deployment", "Implemented"),
+    ("Amazon EC2 Runtime", "Implemented"),
+    ("Amazon S3 Storage", "Implemented"),
+    ("GitHub CI/CD", "Implemented"),
+    ("Production Retraining", "Implemented"),
+    ("Governance Dashboard", "Implemented"),
+]
+
+ccols = st.columns(4)
+
+for idx, item in enumerate(capabilities):
+    capability, status = item
+
+    with ccols[idx % 4]:
+        st.markdown(
+            f"""
+            <div class="glass-card" style="min-height:115px; margin-bottom:1rem;">
+                <div style="color:#4ade80; font-size:1rem; font-weight:900;">
+                    ✓ {capability}
+                </div>
+                <div style="color:#fb923c; font-size:0.82rem; font-weight:900; margin-top:.6rem;">
+                    {status}
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
 
 section_label("Governance Controls")
@@ -280,7 +404,9 @@ narrative_card(
     CareFlow IQ demonstrates a production-ready healthcare AI architecture.
     The platform connects patient-level prediction, pathway segmentation, explainability,
     model lifecycle governance, cloud artifact storage, Dockerised application serving and
-    automated CI/CD deployment. This creates a transparent and auditable decision intelligence
-    system for safer unscheduled care planning.
+    automated CI/CD deployment.
+    <br><br>
+    The governance layer provides a transparent and auditable decision intelligence
+    system for safer, more proactive and more sustainable unscheduled care planning.
     """
 )
