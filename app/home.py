@@ -37,117 +37,123 @@ def check_api_health() -> bool:
         return response.status_code == 200
     except Exception:
         return False
-
-
+    
 st.markdown(
     """
     <style>
-    .side-card {
-        border: 1px solid rgba(148,163,184,.18);
-        border-radius: 16px;
-        padding: .85rem;
-        background: rgba(15,23,42,.78);
-        margin-bottom: .75rem;
+    .objective-card {
+        min-height: 185px;
+        background: linear-gradient(145deg, rgba(15,23,42,.96), rgba(8,47,73,.42));
+        border: 1px solid rgba(56,189,248,.20);
+        border-radius: 22px;
+        padding: 1.25rem 1.35rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 10px 28px rgba(0,0,0,.18);
+        transition: all .25s ease-in-out;
+        position: relative;
+        overflow: hidden;
     }
-    .side-title {
-        color: #94a3b8;
+
+    .objective-label {
+        color: #fb923c;
         font-size: .72rem;
         text-transform: uppercase;
-        letter-spacing: .12rem;
-        font-weight: 800;
-        margin-bottom: .55rem;
-    }
-    .status-online {
-        color: #4ade80;
+        letter-spacing: .18rem;
         font-weight: 900;
+        margin-bottom: .75rem;
     }
-    .status-offline {
-        color: #fb7185;
-        font-weight: 900;
-    }
-    .model-row {
-        display:flex;
-        justify-content:space-between;
-        gap:.5rem;
-        color:#cbd5e1;
-        font-size:.78rem;
-        margin-bottom:.4rem;
-    }
-    .cloud-row {
-        color:#cbd5e1;
-        font-size:.8rem;
-        line-height:1.5;
-        margin-bottom:.45rem;
-    }
-    .exec-card {
-        min-height: 210px;
-        background: rgba(15, 23, 42, 0.92);
-        border: 1px solid rgba(56, 189, 248, 0.18);
-        border-left: 4px solid #fb923c;
-        border-radius: 22px;
-        padding: 1.25rem;
-        margin-bottom: 1rem;
-        box-shadow: 0 0 26px rgba(0,0,0,0.16);
-    }
-    .exec-title {
+
+    .objective-title {
         color: #f8fafc;
-        font-size: 1.05rem;
+        font-size: 1.3rem;
         font-weight: 900;
-        margin-bottom: .65rem;
+        margin-bottom: .85rem;
     }
-    .exec-text {
+
+    .objective-text {
         color: #cbd5e1;
-        font-size: .88rem;
+        font-size: .9rem;
         line-height: 1.55;
     }
-    .exec-impact {
-        color: #94a3b8;
-        font-size: .82rem;
-        line-height: 1.5;
-        margin-top: .7rem;
+
+    .module-card {
+        min-height: 310px;
+        background: linear-gradient(145deg, rgba(15,23,42,.96), rgba(2,6,23,.94));
+        border: 1px solid rgba(56,189,248,.22);
+        border-left: 4px solid #fb923c;
+        border-radius: 24px;
+        padding: 1.55rem;
+        box-shadow: 0 14px 34px rgba(0,0,0,.20);
+        margin-bottom: 1rem;
+        transition: all .25s ease-in-out;
+        cursor: pointer;
     }
-    .exec-impact b {
+
+    .module-card:hover {
+        transform: translateY(-6px);
+        border-color: rgba(74,222,128,.85);
+        border-left-color: #4ade80;
+        box-shadow:
+            0 0 0 1px rgba(74,222,128,.25),
+            0 0 34px rgba(74,222,128,.22),
+            0 18px 40px rgba(0,0,0,.28);
+        background: linear-gradient(145deg, rgba(15,23,42,.98), rgba(20,83,45,.34));
+    }
+
+    .module-card:hover .module-title {
         color: #4ade80;
     }
-    .module-card {
-        min-height: 300px;
-        background: rgba(15, 23, 42, 0.92);
-        border: 1px solid rgba(56, 189, 248, 0.18);
-        border-left: 4px solid #fb923c;
-        border-radius: 22px;
-        padding: 1.5rem;
-        box-shadow: 0 0 26px rgba(0,0,0,0.16);
-        margin-bottom: 0.9rem;
+
+    .module-card:hover .module-output b {
+        color: #fb923c;
     }
+
     .module-title {
         color: #f8fafc;
-        font-size: 1.25rem;
+        font-size: 1.28rem;
         font-weight: 900;
         margin-bottom: 1rem;
+        transition: color .25s ease-in-out;
     }
+
     .module-text {
         color: #cbd5e1;
-        font-size: 0.95rem;
+        font-size: .95rem;
         line-height: 1.65;
         margin-bottom: 1rem;
     }
+
     .module-output {
         color: #94a3b8;
-        font-size: 0.86rem;
+        font-size: .86rem;
         line-height: 1.55;
     }
+
     .module-output b {
         color: #4ade80;
+        transition: color .25s ease-in-out;
     }
+
     div[data-testid="stPageLink"] a {
         width: 100%;
         justify-content: center;
         background: rgba(15, 23, 42, 0.95);
         border: 1px solid rgba(251, 146, 60, 0.45);
         color: #f8fafc !important;
-        padding: 0.8rem;
-        border-radius: 14px;
-        font-weight: 800;
+        padding: .85rem;
+        border-radius: 15px;
+        font-weight: 850;
+        transition: all .25s ease-in-out;
+    }
+
+    div[data-testid="stPageLink"] a:hover {
+        background: rgba(20,83,45,.42);
+        border-color: rgba(74,222,128,.85);
+        color: #ffffff !important;
+        transform: translateY(-3px);
+        box-shadow:
+            0 0 0 1px rgba(74,222,128,.18),
+            0 0 24px rgba(74,222,128,.18);
     }
     </style>
     """,
@@ -376,7 +382,16 @@ for idx, item in enumerate(objectives):
     title, detail = item
 
     with ocols[idx % 3]:
-        kpi_card(title, "Objective", detail)
+        st.markdown(
+            f"""
+            <div class="objective-card">
+                <div class="objective-label">Strategic Objective</div>
+                <div class="objective-title">{title}</div>
+                <div class="objective-text">{detail}</div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
 
 section_label("Strategic Objectives")
