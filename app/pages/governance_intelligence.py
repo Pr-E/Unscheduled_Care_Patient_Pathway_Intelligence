@@ -48,40 +48,6 @@ with c4:
     kpi_card("Cloud Runtime", "AWS EC2", "Dockerised production app")
 
 
-section_label("Clinical Data & Research Foundation")
-
-d1, d2, d3, d4 = st.columns(4)
-
-with d1:
-    kpi_card("Data Source", "Yale New Haven", "Health System")
-
-with d2:
-    kpi_card("ED Encounters", "558,018", "Adult emergency visits")
-
-with d3:
-    kpi_card("Study Period", "2014–2017", "March 2014 to July 2017")
-
-with d4:
-    kpi_card("Original Variables", "972", "Per patient encounter")
-
-narrative_card(
-    """
-    The analytical foundation for CareFlow IQ is a retrospective Emergency Department
-    dataset from the <b>Yale New Haven Health System</b>, covering adult ED visits
-    between <b>March 2014 and July 2017</b>.
-    <br><br>
-    The original study included encounters across <b>one academic</b> and
-    <b>two community Emergency Departments</b>, with <b>972 variables</b>
-    extracted per patient visit.
-    <br><br>
-    The source research was affiliated with the <b>Department of Emergency Medicine,
-    Yale School of Medicine, New Haven, Connecticut, United States of America</b>.
-    The original objective was to predict hospital admission at the time of ED triage.
-    CareFlow IQ extends this into a governed patient pathway intelligence and production
-    MLOps platform.
-    """
-)
-
 
 section_label("Research-to-Production Pipeline")
 
